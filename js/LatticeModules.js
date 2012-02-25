@@ -33,6 +33,11 @@ lattice.modules.Module = new Class({
   getSaveFileSubmitURL: function(){
    throw "Abstract function getSaveFileSubmit must be overriden in" + this.toString();
   },
+
+
+  getUploaderSWFUrl : function(){
+      return "lattice/lattice/views/thirdparty/digitarald/fancyupload/Swiff.Uploader3.swf";
+  },
 	
 	getClearFieldURL: function(){
 		throw "Abstract function getClearFieldURL must be overriden in" + this.toString();		
