@@ -1397,7 +1397,6 @@ lattice.ui.FileElement = new Class({
 		if( this.previewElement ) this.imagePreview = this.previewElement.getElement( "img" );
 		this.filename = this.element.getElement( ".fileName" );
 		if( lattice.util.getValueFromClassName( 'extensions', this.element.get("class") ) ) this.extensions = this.buildExtensionsObject()
-		this.marshal.getSaveFileSubmitURL();
 		this.uploader.setTarget( this, this.uploadLink, this.getOptions() );
 		this.reposition();
 	},	
