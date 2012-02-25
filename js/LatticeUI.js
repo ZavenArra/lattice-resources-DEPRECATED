@@ -1370,7 +1370,7 @@ lattice.ui.FileElement = new Class({
 		this.clearButton.addEvent( "click", this.clearFile.bindWithEvent( this ) );
 
 		this.uploader = new lattice.util.Uploader({
-			path: lattice.util.getBaseURL() + "lattice/lattice/views/thirdparty/digitarald/fancyupload/Swiff.Uploader3.swf",
+			path: lattice.util.getBaseURL() + aMarshal.getUploaderSWFUrl(),
 			container: this.uploadLink,
 			target: this.uploadButton,
 			cookie: Cookie.read( 'session' )
@@ -1397,7 +1397,6 @@ lattice.ui.FileElement = new Class({
 		if( this.previewElement ) this.imagePreview = this.previewElement.getElement( "img" );
 		this.filename = this.element.getElement( ".fileName" );
 		if( lattice.util.getValueFromClassName( 'extensions', this.element.get("class") ) ) this.extensions = this.buildExtensionsObject()
-		this.marshal.getSaveFileSubmitURL();
 		this.uploader.setTarget( this, this.uploadLink, this.getOptions() );
 		this.reposition();
 	},	

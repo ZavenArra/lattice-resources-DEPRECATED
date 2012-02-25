@@ -29,12 +29,21 @@ lattice.modules.Module = new Class({
 	getSaveFieldURL: function(){
 		throw "Abstract function getSaveFieldURL must be overriden in" + this.toString();
 	},
+
+  getSaveFileSubmitURL: function(){
+   throw "Abstract function getSaveFileSubmit must be overriden in" + this.toString();
+  },
+
+
+  getUploaderSWFUrl : function(){
+      return "lattice/lattice/views/thirdparty/digitarald/fancyupload/Swiff.Uploader3.swf";
+  },
 	
 	getClearFieldURL: function(){
 		throw "Abstract function getClearFieldURL must be overriden in" + this.toString();		
 	},
 
-	getClearFiledURL: function(){
+	getClearFieldURL: function(){
 		throw "Abstract function getClearFieldURL must be overriden in" + this.toString();		
 	},
 	
@@ -339,10 +348,6 @@ lattice.modules.LatticeList = new Class({
 	
 	/* Section: Getters & Setters */
 	
-	getSaveFieldURL: function(){
-    throw "LatticeList Abstract function getSaveFieldURL must be overriden in" + this.toString();
-	},
-
 	getAddObjectURL: function(){
 	    throw "Abstract function getAddObjectURL must be overriden in" + this.toString();
 	},
@@ -781,12 +786,9 @@ lattice.modules.LatticeAssociator = new Class({
 	scroller: null,
 	submitDelay: null,
 	oldSort: null,
-	
-	/* Section: Getters & Setters */
-	
-	getSaveFieldURL: function(){
-    throw "Abstract function getSaveFieldURL must be overriden in" + this.toString();
-	},
+
+  /* Section: Getters & Setters */
+
 
 	getAssociateURL: function(){
 		throw "Abstract function getAssociateURL must be overriden in" + this.toString();
