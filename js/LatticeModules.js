@@ -34,7 +34,7 @@ lattice.modules.Module = new Class({
 		throw "Abstract function getClearFieldURL must be overriden in" + this.toString();		
 	},
 
-	getClearFiledURL: function(){
+	getClearFieldURL: function(){
 		throw "Abstract function getClearFieldURL must be overriden in" + this.toString();		
 	},
 	
