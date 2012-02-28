@@ -834,35 +834,40 @@ lattice.modules.LatticeAssociator = new Class({
 
 	build: function(){
 		this.parent();
+		this.actuator = this.element.getElement('.actuator a.icon');
 		this.associated = this.element.getElement( 'ul.associated' );
-		this.pool = this.element.getElement('div.pool');
+		this.pool = this.element.getElement('.poolcontainer');
 		this.poolList = this.element.getElement( 'ul' );
 		this.element.getElements( '.shadow' ).each( function( el ){
-			el.addBoxShadow( "1px 1px 5px #ddd");
+			el.addBoxShadow( "1px 1px 4px #dedede");
 		});
 		this.poolMorph = new Fx.Morph( this.pool, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
 
-		this.element.addEvent( 'mouseenter', function(){
+		this.actuator.addEvent( 'click', function(e){
+			e.stop();
 			this.poolMorph.cancel();
-			this.pool.setStyles({
-				"opacity": 0,
-				"height": 0,
-				"display": "block"
-			});
-			this.poolMorph.start({
-				"opacity": 1,
-				"height": "auto",
-				"display": "block"				
-			});
-		}.bind( this ) );		
-
-		this.element.addEvent( 'mouseleave', function(){
-			this.poolMorph.cancel();
-			this.poolMorph.start({
-				"opacity": 0,
-				"height": "0px"
-			});
-		}.bind( this ));
+			if( this.actuator.hasClass('closed')){
+					this.actuator.removeClass('closed');
+					this.actuator.addClass('open');
+					this.pool.setStyles({
+						"opacity": 0,
+						"height": 0,
+						"display": "block"
+					});
+					this.poolMorph.start({
+						"opacity": 1,
+						"height": "auto",
+						"display": "block"				
+					});
+			}else{
+				this.actuator.removeClass('open');
+				this.actuator.addClass('closed');
+				this.poolMorph.start({
+					"opacity": 0,
+					"height": 0
+				});				
+			}
+		}.bindWithEvent( this ) );
 		this.initControls();
 		this.initItems();
 		this.filterSubmitButton = this.element.getElement(".filter .button");
@@ -872,7 +877,6 @@ lattice.modules.LatticeAssociator = new Class({
 	},	
 	
 	initItems: function(){
-//		lattice.log(">>>>>>>>>>>>>>>>", this.element.getElements( "ul.associated li" ), this.element.getElements( "ul.pool li" ))
     var items = this.element.getElements( "ul.associated li" ).combine( this.element.getElements( "ul.pool li" ) );
 		items.each( function( el ){
 			this.initItem( el );

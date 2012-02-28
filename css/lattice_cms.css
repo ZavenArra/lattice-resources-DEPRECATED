@@ -2,46 +2,54 @@ body {
 	color:#222;
 	background:#fff;
 	font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: .75em;
-	line-height: 18px;
+	font-size: .875em;
+	line-height: 1.5em;
 	padding-bottom:6em;
 }
 
-h1, h2, h3, h4, h5{ font-weight:normal;color:#121212; }
+h1, h2, h3, h4, h5{
+	font-weight:normal;color:#121212;
+	font-family: Georgia, Times, serif;
+}
 
-h1, .h1{
-	font-size: 4em;		/* 42px */
+h1, 
+.h1{
+	font-size: 4em;
 	line-height: 4.5em;
 }
 
-h2, .h2{
-	font-size: 3em;		/* 36px */
+h2, 
+.h2{
+	font-size: 3em;
 	line-height: 1;
 }
 
-.measureDiv{
-    position: fixed;
-    left: -3000px;
-}
-
-h3, .h3 {
-	font-size: 2.25em;	/* 27px */
+h3, 
+.h3 {
+	font-size: 2.25em;
 	line-height: 1;
 }
 
-h4, .h4 { 
-	font-size: 1.75em;	/* 21px */
-	font-size: 1.75em;
+h4, 
+.h4 { 
+	font-size: 1.25em;
 }
 
-h5, .h5 {
-	font-size: 1.5em;	/* 18px */ 
-	font-size: 1.5em;
+h5, 
+.h5 {
+	font-size: 1.25em;
 }
 
-h6, .h6 {
-	font-size: 1.25em;	/* 18px */ 
-	font-size: 1.25em;	
+h6, 
+.h6 {
+	font-size: 1.25em;
+}
+
+h1 img, 
+h2 img,
+h3 img, 
+h4 img{
+	margin:0;
 }
 
 #adminHeader{
@@ -100,7 +108,7 @@ input, textarea{
 .ui-Input input{
 	font-family: Georgia, Times, Serif;
 	margin: 0em 0em .5em 0em;
-	padding: .25em .5em !important;
+	padding: .5em .75em !important;
 	color:#222;
 	cursor: text;
 }
@@ -110,8 +118,6 @@ input, textarea{
 	resize: none;
 }
 
-/*.ui-Text[data-ismultiline=true] .ipe,
-*/
 .ui-Text[data-ismultiline=true] textarea{
 	min-height: 7.5em;
 }
@@ -119,13 +125,6 @@ input, textarea{
 .displayField{
 	color:#333;
 	background:#eee;
-}
-
-h1 img, 
-h2 img,
-h3 img, 
-h4 img{
-	margin:0;
 }
 
 p {
@@ -238,6 +237,16 @@ ul.listing li{
 	Associator 
 --------------------------------------------------
 */
+.associator{
+	margin-top: 1.5em;
+}
+
+.associator h4{
+	padding-bottom: .5em;
+	margin-bottom: .5em;
+	border-bottom: 1px #ededed solid;
+}
+
 .associator ul{
 	display: relative;
 }
@@ -250,9 +259,9 @@ ul.listing li{
 	clear: both;
 }
 
-.associator div.pool{
+.associator .poolcontainer{
 	display: none;
-	border-top: 1px #dedede solid;
+	border: 1px #f00 solid;
 	padding-top: 1.5em;
 }
 
@@ -261,9 +270,15 @@ ul.listing li{
 	width: 196px;
 	height: 64px;
 	padding: 12px;
-	margin: 0 10px 1.5em 10px;
+	margin: 1em 5px 0 5px;
 }
 
+.associator .actuator{
+	clear: both;
+	padding: .5em 1em;
+}
+
+.associator .actuator .icon,
 .associator ul li{
 	position: relative;
 }
@@ -290,6 +305,10 @@ ul.listing li{
 
 .associator .pool li:hover .itemControls a.associate,
 .associator .associated li:hover .itemControls a.dissociate{
+	position: absolute;
+/*	text-indent: -3000px;
+*/
+	padding-left: 3em;
 	display:block;
 	width: 100%;
 	height: 100%;
@@ -298,12 +317,23 @@ ul.listing li{
 
 .associator .itemControls a.associate{
 	background: url( ../images/icon_associate.png ) center no-repeat;
-	vertical-align: middle;
 }
 
 .associator .itemControls a.dissociate{
 	background: url( ../images/icon_dissociate.png ) center no-repeat;
-	vertical-align: middle;
+}
+
+.associator .actuator a.icon{
+	display: block;
+	background-image: url( ../images/icon_openclose.png );
+}
+
+.associator .actuator a.icon.closed{
+	background-position: top right;
+}
+
+.associator .actuator a.icon.open{
+	background-position: top left;
 }
 
 /* /////////////////////////////////////////////////////////// */
@@ -326,7 +356,7 @@ ul.listing li{
 .ui-FileElement .controls,
 .ui-File .controls,
 .ui-ImageFile .controls{
-	margin-left: .25em;
+	margin-left: .5em;
 }
 
 .ui-FileElement img{
@@ -339,6 +369,7 @@ ul.listing li{
 .ui-File .wrapper{
 	margin:0 0 .5em 0;
 	padding: 0 0 .5em 0;
+	background: #efefef;
 }
 
 
@@ -346,7 +377,7 @@ ul.listing li{
 .ui-ImageFile .fileName,
 .ui-File .fileName{
 	height: 16px;
-	color: #aaa;
+	color: #666;
 	font-size: 80%;
 	background-repeat:no-repeat;
 	background-position: .5em 1em;
@@ -456,11 +487,17 @@ a.icon.cancel{ background-image: url( ../images/icon_cancel.png); }
 
 .module#cms{ margin:0 0 0 0 !important; }
 
+.controls a,
 label{
+	font-size: .875em;
 	font-weight: normal;
 	color:#aaa;
+	line-height: 1.5;
 }
 
+.controls a{
+	color:#fff;	
+}
 
 .listLabel{
 	display: block;
@@ -550,9 +587,6 @@ button:hover, a.button:hover{
 	color:#fff;
 }
 
-h3, h4{
-	font-family: Georgia, Times, serif;
-}
 .modalContainer h3{
 	font-weight: normal;
 	color:#fff;
@@ -676,7 +710,6 @@ input[type='checkbox']{
 	top:0;
 }
 .switchbox div.label {
-	font-size:11px;
 	font-weight:bold;
 	color:#ddd;
 	text-shadow:0 -1px 1px #555;
