@@ -264,8 +264,8 @@ ul.listing li{
 }
 
 .associator .poolcontainer{
-	display: none;
-	border: 1px #f00 solid;
+/*	display: none;
+*/
 	padding-top: 1.5em;
 }
 
