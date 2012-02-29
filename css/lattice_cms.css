@@ -170,8 +170,12 @@ blockquote {
 }
 
 legend {
-	font-weight:bold;
-	font-size:.8em;
+	position: static;
+	display: block;
+	clear: both;
+	background: #efefef;
+	padding: .5em 1em;
+	border-bottom: 1px #aaa solid;
 }
 
 .error, .notice, .success {
@@ -595,7 +599,7 @@ button:hover, a.button:hover{
 }
 
 .modal .content{
-	margin-top: 12em;
+	margin-top: 10em;
 	padding: 1em 2em 2em 2em;
 }
 
@@ -1061,6 +1065,10 @@ DATE PICKER
 .ui-DateRangePicker .startDate{
 	float: left;
 	margin-right: 1em !important;
+}
+
+.content.login fieldset{
+	padding-top: 1em;
 }
 
 fieldset.padded{
