@@ -1151,6 +1151,7 @@ lattice.ui.DateRange = new Class({
 	onSelect: function( e ){
 		lattice.util.stopEvent( e );
 		this.submit();
+		this.element.getElement(".spinner").removeClass("hidden");
 		if( this.options.onSelectCallback ) this.options.onSelectCallback();
 	},
 	

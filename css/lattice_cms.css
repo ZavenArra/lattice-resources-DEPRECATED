@@ -1040,9 +1040,6 @@ DATE PICKER
 	background: #000;
 }
 
-/*.ui-DateRangePicker{
-}*/
-
 .ui-MultiSelect p,
 .ui-DatePicker input[type~='text'],
 .ui-DateRangePicker input[type~='text']{
@@ -1054,11 +1051,6 @@ DATE PICKER
 	
 }
 
-/*.ui-DatePicker input[type~='text'],
-.ui-DateRangePicker input[type~='text']{
-	width: 8em;
-}
-*/
 .ui-MultiSelect p{
 	background: #FFFAC4 url(  ../images/iconMultiSelect.gif ) 9em .7em no-repeat; 	
 }
@@ -1071,12 +1063,11 @@ DATE PICKER
 .ui-DateRangePicker label{
 	display:block;
 }
-/*
-.ui-DateRangePicker .startDate{
-	float: left;
-	margin-right: 1em !important;
+
+.datepicker button.apply{
+	clear: left;
 }
-*/
+
 .content.login fieldset{
 	padding-top: 1em;
 }
