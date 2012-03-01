@@ -1009,13 +1009,12 @@ lattice.ui.DatePicker = new Class({
 	    format: "%Y/%m/%d"
 	},
 		
-	initialize: function( anElement, aMarshal, options ){
-		lattice.log( 'lattice.ui.DatePicker', anElement, aMarshal, options );
-		this.parent( anElement, aMarshal, options );
+	initialize: function( anElement, options ){
+		this.parent( anElement, options );
 		this.format = ( this.element.getData('format') )? this.element.getData('format') : this.options.format;
 		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
 		this.dateField = this.element.getElement("input");
-		this.buildPicker();
+	    this.buildPicker();
 	},
 	
     
@@ -1104,8 +1103,8 @@ lattice.ui.TimePicker = new Class({
 		return '[ object, lattice.ui.UIField, lattice.ui.DatePicker, lattice.ui.TimePicker ]';
 	},
 		
-	initialize: function( anElement, aMarshal, options ){
-		this.parent( anElement, aMarshal, options );
+	initialize: function( anElement, options ){
+		this.parent( anElement, options );
 	},
 	
 	buildPicker: function(){
@@ -1124,28 +1123,30 @@ lattice.ui.TimePicker = new Class({
 /*	Class: lattice.ui.DateRangePicker
 	Datepicker with two fields, and range validation 
 */
-lattice.ui.DateRange = new Class({
+lattice.ui.DateRangePicker = new Class({
 
 	Extends: lattice.ui.UIField,
 		
 	options: {
-    format: "%m/%d/%Y",
 		allowEmpty: false,
 		startView: 'month'
 	},
 	
-	initialize: function( anElement, anElemnent, options ){
+	initialize: function( anElement, aMarshal ){
 
 		var opts, picker;
-		this.parent( anElement, anElement, options );
+
+		this.parent( anElement, aMarshal );
 		this.dateField = this.element.getElement("input");
 		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
 		this.startView = ( this.element.getData('startview') )? this.element.getData('startview') : this.options.startView;
-		this.dp = new Picker.Date.Range( this.dateField, {
+		this.dp = new Picker.Date.Range( element, {
+			toggle: this.dateField,
 			columns: 3,
-			format: '%m/%d/%Y'
-			// onSelect: this.onSelect.bind( this )
-		});		
+			// format: '%m/%d/%Y',
+			onSelect: this.onSelect.bind( this )
+		});
+		
 	},
 	
 	onSelect: function( e ){

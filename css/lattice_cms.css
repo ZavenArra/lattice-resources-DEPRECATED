@@ -271,10 +271,10 @@ ul.listing li{
 
 .associator ul li{
 	float: left;
-	width: 196px;
+	width: 200px;
 	height: 64px;
 	padding: 12px;
-	margin: 1em 5px 0 5px;
+	margin: 1em 10px 0 10px;
 }
 
 .associator .actuator{
@@ -310,8 +310,6 @@ ul.listing li{
 .associator .pool li:hover .itemControls a.associate,
 .associator .associated li:hover .itemControls a.dissociate{
 	position: absolute;
-/*	text-indent: -3000px;
-*/
 	padding-left: 3em;
 	display:block;
 	width: 100%;
@@ -329,6 +327,8 @@ ul.listing li{
 
 .associator .actuator a.icon{
 	display: block;
+	width: 16px;
+	height: 16px;
 	background-image: url( ../images/icon_openclose.png );
 }
 
@@ -336,10 +336,22 @@ ul.listing li{
 	background-position: top right;
 }
 
+.associator .actuator a.icon.closed:hover{
+	background-position: bottom right;
+}
+
 .associator .actuator a.icon.open{
 	background-position: top left;
 }
 
+.associator .actuator a.icon.open:hover{
+	background-position: bottom left;
+}
+
+.associator .filter input{
+	display: block;
+	float: left;
+}
 /* /////////////////////////////////////////////////////////// */
 
 .spinner {
