@@ -49,6 +49,10 @@ Picker.Date.Range = new Class({
 	},
 
 	constructPicker: function(){
+<<<<<<< HEAD
+=======
+		console.log( 'constructPicker' );
+>>>>>>> 231c83fb53e2cad8dba1a643be926a0d3bb5397b
 		this.parent();
 		var footer = this.footer, self = this;
 		if (!footer) return;
@@ -88,6 +92,10 @@ Picker.Date.Range = new Class({
 	},
 
 	select: function(date){
+<<<<<<< HEAD
+=======
+		console.log( 'select', date );
+>>>>>>> 231c83fb53e2cad8dba1a643be926a0d3bb5397b
 		if (this.startDate && (this.endDate == this.startDate || date > this.endDate) && date >= this.startDate) this.endDate = date;
 		else {
 			this.startDate = date;

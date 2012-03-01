@@ -800,7 +800,6 @@ DATE PICKER
 	font-size: .8em;
 	width: 190px;
 	padding: .5em;
-/*	height: 221px;*/
 	background: #fff;
 	line-height: normal;
 }
@@ -822,7 +821,6 @@ DATE PICKER
 
 .datepicker .header .titleText {
 	color: #666;
-/*	font-weight: bold;*/
 }
 .datepicker .header .next,
 .datepicker .header .previous,
@@ -862,8 +860,7 @@ DATE PICKER
 ********************************************************/
 .datepicker .time {
 	width: 100%;
-/*	height: 100%;
-*/	background: #eee;
+	background: #eee;
 }
 
 .datepicker .time .hour,
@@ -1014,6 +1011,7 @@ DATE PICKER
 	color: #fff !important;
 }
 
+
 #controlPanelList{
 	font-size: 2em;
 	margin:0;
@@ -1042,8 +1040,8 @@ DATE PICKER
 	background: #000;
 }
 
-.ui-DateRangePicker{
-}
+/*.ui-DateRangePicker{
+}*/
 
 .ui-MultiSelect p,
 .ui-DatePicker input[type~='text'],
@@ -1056,11 +1054,11 @@ DATE PICKER
 	
 }
 
-.ui-DatePicker input[type~='text'],
+/*.ui-DatePicker input[type~='text'],
 .ui-DateRangePicker input[type~='text']{
 	width: 8em;
 }
-
+*/
 .ui-MultiSelect p{
 	background: #FFFAC4 url(  ../images/iconMultiSelect.gif ) 9em .7em no-repeat; 	
 }
@@ -1073,12 +1071,12 @@ DATE PICKER
 .ui-DateRangePicker label{
 	display:block;
 }
-
+/*
 .ui-DateRangePicker .startDate{
 	float: left;
 	margin-right: 1em !important;
 }
-
+*/
 .content.login fieldset{
 	padding-top: 1em;
 }
