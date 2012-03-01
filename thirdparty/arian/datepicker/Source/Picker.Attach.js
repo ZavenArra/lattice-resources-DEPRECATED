@@ -14,10 +14,11 @@ Picker.Attach = new Class({
 	Extends: Picker,
 
 	options: {/*
-		onAttachedEvent: function(event){},
+		onAttached: function(event){},
 
 		toggleElements: null, // deprecated
 		toggle: null, // When set it deactivate toggling by clicking on the input */
+		togglesOnly: true, // set to false to always make calendar popup on input element, if true, it depends on the toggles elements set.
 		showOnInit: false, // overrides the Picker option
 		blockKeydown: true
 	},
@@ -71,10 +72,12 @@ Picker.Attach = new Class({
 
 		var getOpenEvent = function(element){
 			return function(event){
-				if (event.target.get('tag') == 'a') event.stop();
-				self.fireEvent('attachedEvent', [event, element]);
+				var tag = event.target.get('tag');
+				if (tag == 'input' && event.type == 'click' && !element.match(':focus') || (self.opened && self.input == element)) return;
+				if (tag == 'a') event.stop();
 				self.position(element);
 				self.open();
+				self.fireEvent('attached', [event, element]);
 			};
 		};
 
@@ -95,10 +98,10 @@ Picker.Attach = new Class({
 				openEvent = getOpenEvent(element),
 				// closeEvent does not have a depency on element
 				toggleEvent = getToggleEvent(openEvent, closeEvent);
-	
+
 			if (tag == 'input'){
 				// Fix in order to use togglers only
-				if (!toggles.length){
+				if (!self.options.togglesOnly || !toggles.length){
 					events = {
 						focus: openEvent,
 						click: openEvent,
@@ -146,7 +149,6 @@ Picker.Attach = new Class({
 
 			var inputIndex = self.inputs.indexOf(element);
 			if (toggleIndex != -1) delete self.inputs[inputIndex];
-
 		});
 		return this;
 	},
