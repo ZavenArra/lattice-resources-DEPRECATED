@@ -1143,7 +1143,7 @@ lattice.ui.DateRangePicker = new Class({
 		this.dp = new Picker.Date.Range( element, {
 			toggle: this.dateField,
 			columns: 3,
-			onSelect: this.onSelect.bind( this );
+			onSelect: this.onSelect.bind( this )
 		});
 		
 	},
