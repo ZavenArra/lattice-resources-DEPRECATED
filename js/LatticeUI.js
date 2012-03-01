@@ -1145,8 +1145,7 @@ lattice.ui.DateRange = new Class({
 			columns: 3,
 			format: '%m/%d/%Y'
 			// onSelect: this.onSelect.bind( this )
-		});
-		
+		});		
 	},
 	
 	onSelect: function( e ){
