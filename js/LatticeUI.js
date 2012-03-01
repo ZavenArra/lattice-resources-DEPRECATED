@@ -1009,13 +1009,12 @@ lattice.ui.DatePicker = new Class({
 	    format: "%Y/%m/%d"
 	},
 		
-	initialize: function( anElement, aMarshal, options ){
-		lattice.log( 'lattice.ui.DatePicker', anElement, aMarshal, options );
-		this.parent( anElement, aMarshal, options );
+	initialize: function( anElement, options ){
+		this.parent( anElement, options );
 		this.format = ( this.element.getData('format') )? this.element.getData('format') : this.options.format;
 		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
 		this.dateField = this.element.getElement("input");
-		this.buildPicker();
+	    this.buildPicker();
 	},
 	
     
@@ -1104,8 +1103,8 @@ lattice.ui.TimePicker = new Class({
 		return '[ object, lattice.ui.UIField, lattice.ui.DatePicker, lattice.ui.TimePicker ]';
 	},
 		
-	initialize: function( anElement, aMarshal, options ){
-		this.parent( anElement, aMarshal, options );
+	initialize: function( anElement, options ){
+		this.parent( anElement, options );
 	},
 	
 	buildPicker: function(){
@@ -1124,20 +1123,15 @@ lattice.ui.TimePicker = new Class({
 /*	Class: lattice.ui.DateRangePicker
 	Datepicker with two fields, and range validation 
 */
-lattice.ui.DateRange = new Class({
+lattice.ui.DateRangePicker = new Class({
 
 	Extends: lattice.ui.UIField,
 		
 	options: {
-<<<<<<< HEAD
-=======
-    format: "%m/%d/%Y",
->>>>>>> 231c83fb53e2cad8dba1a643be926a0d3bb5397b
 		allowEmpty: false,
 		startView: 'month'
 	},
 	
-<<<<<<< HEAD
 	initialize: function( anElement, aMarshal ){
 
 		var opts, picker;
@@ -1149,20 +1143,7 @@ lattice.ui.DateRange = new Class({
 		this.dp = new Picker.Date.Range( element, {
 			toggle: this.dateField,
 			columns: 3,
-			onSelect: this.onSelect.bind( this )
-=======
-	initialize: function( anElement, anElemnent, options ){
-
-		var opts, picker;
-		this.parent( anElement, anElement, options );
-		this.dateField = this.element.getElement("input");
-		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
-		this.startView = ( this.element.getData('startview') )? this.element.getData('startview') : this.options.startView;
-		this.dp = new Picker.Date.Range( this.dateField, {
-			columns: 3,
-			format: '%m/%d/%Y'
-			// onSelect: this.onSelect.bind( this )
->>>>>>> 231c83fb53e2cad8dba1a643be926a0d3bb5397b
+			onSelect: this.onSelect.bind( this );
 		});
 		
 	},
