@@ -836,12 +836,12 @@ lattice.modules.LatticeAssociator = new Class({
 		this.parent();
 		this.actuator = this.element.getElement('.actuator a.icon');
 		this.associated = this.element.getElement( 'ul.associated' );
-		this.pool = this.element.getElement('.poolcontainer');
-		this.poolList = this.element.getElement( 'ul' );
+		this.poolContainer = this.element.getElement('.poolcontainer');
+		this.poolList = this.element.getElement( 'ul.pool' );
 		this.element.getElements( '.shadow' ).each( function( el ){
 			el.addBoxShadow( "1px 1px 4px #dedede");
 		});
-		this.poolMorph = new Fx.Morph( this.pool, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
+		this.poolMorph = new Fx.Morph( this.poolContainer, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
 
 		this.actuator.addEvent( 'click', function(e){
 			e.stop();
@@ -849,7 +849,7 @@ lattice.modules.LatticeAssociator = new Class({
 			if( this.actuator.hasClass('closed')){
 					this.actuator.removeClass('closed');
 					this.actuator.addClass('open');
-					this.pool.setStyles({
+					this.poolContainer.setStyles({
 						"opacity": 0,
 						"height": 0,
 						"display": "block"
@@ -930,20 +930,11 @@ lattice.modules.LatticeAssociator = new Class({
 		item.element.unspin();
 		var element, listItem, addItemText, classPath, ref;
 		associateText = this.controls.getElement( ".associate" ).get( "text" );
-/*	FOR META FIELDS WE NEED TO TAKE THE JSON RESPONSE AND REPLACE THE ELEMENT WITH IT, WHICH MEANS WE'LL NEED TO REINIT IT TOO 
-		element = json.response.html.toElement();
-		listItem = this.initItem( element );
-*/
-		// Object.each( listItem.UIFields, function( uiField ){
-		// 	uiField.scrollContext = "modal";
-		// 	if( uiField.reposition ) uiField.reposition('modal');
-		// });
 		lattice.util.EventManager.broadcastMessage( "resize" );
-//	this.insertItem( listItem );
 	},
 
 	dissociateRequest: function( item ){
-//		lattice.log("dissociate", item, item.getObjectId() );
+		lattice.log("dissociate", item, item.getObjectId(), this.poolList );
     item.element.spin();
 		this.poolList.grab( item.element );
 		lattice.util.EventManager.broadcastMessage( "resize" );          
@@ -1012,7 +1003,7 @@ lattice.modules.LatticeAssociator = new Class({
 	destroy: function(){
 		if(this.sortableList) this.removeSortable( this.sortableList );
 		clearInterval( this.submitDelay );
-		this.controls = this.instanceName = this.poolList = this.associated = this.oldSort = this.allowChildSort, this.sortDirection, this.submitDelay = null;
+		this.controls = this.instanceName = this.poolContainer = this.poolList = this.associated = this.oldSort = this.allowChildSort, this.sortDirection, this.submitDelay = null;
     if( this.scroller ) this.scroller = null;
 		lattice.util.EventManager.broadcastMessage( 'resize' );
 		this.parent();
