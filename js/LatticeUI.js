@@ -1128,59 +1128,34 @@ lattice.ui.DateRangePicker = new Class({
 	Extends: lattice.ui.UIField,
 		
 	options: {
-		alerts:{
-			endDateLessThanStartDateError : "The end date cannot be earlier than the start date."
-		},
 		allowEmpty: false,
 		startView: 'month'
 	},
 	
 	initialize: function( anElement, aMarshal ){
+
 		var opts, picker;
+
 		this.parent( anElement, aMarshal );
-		this.dateFields = this.element.getElements("input");
+		this.dateField = this.element.getElement("input");
 		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
 		this.startView = ( this.element.getData('startview') )? this.element.getData('startview') : this.options.startView;
-
-		this.dateFields.each( function( aDateField, index ){
-			opts = {
-				elementId: "datePickerFor_" + this.fieldName,
-				startView: this.startView,
-				allowEmpty: this.allowEmpty,
-				format: "%Y/%m/%d",
-				onShow: this.onShow.bind( this ),
-				onSelect: this.onSelect.bindWithEvent( this ),
-				onClose: function(){},
-				index: index
-			};
-			picker = new Picker.Date( aDateField, this, opts );
-			aDateField.store( "Class", picker );
-		}, this );
+		this.dp = new Picker.Date.Range( element, {
+			toggle: this.dateField,
+			columns: 3,
+			onSelect: this.onSelect.bind( this )
+		});
+		
 	},
 	
 	onSelect: function( e ){
 		lattice.util.stopEvent( e );
-        this.submit();
+		this.submit();
+		if( this.options.onSelectCallback ) this.options.onSelectCallback();
 	},
 	
-	onShow: function( scrollData ){
-		this.dateFields.each( function( aDateField, index ){
-			aDateField.retrieve( "Class" ).reposition( scrollData );
-		});
-	},
-	
-	onClose: function(){},
-	
-	
-	reposition: function( scrollData ){
-		this.dateFields.each( function( aDateField ){
-			aDateField.reposition( scrollData );
-		});
-	},
-
-	validate: function(){
-		if( !this.isEndDateAfterStartDate() ) this.validationErrors.push( this.options.alerts.endDateLessThanStartDateError );
-		this.parent();
+	reposition: function( scrollData ){ 
+		this.reposition( scrollData );
 	},
 	
 	toString: function(){
@@ -1192,120 +1167,31 @@ lattice.ui.DateRangePicker = new Class({
 	},
 	
 	getValue: function(){
-		var startDate = this.dateFields[0].retrieve("Class").getValue();
-		var endDate = this.dateFields[1].retrieve("Class").getValue();
-		return { startDate: startDate, endDate: endDate, field: this.fieldName };
+		return { startDate: this.dp.getStartDate(), endDate: this.dp.getEndDate(), field: this.fieldName };
 	},
 	
 	setValue: function( date ){
-
-		var range = { startDate: null, endDate: null };
-		
-		var now = new Date();
-		if( !date ){
-			var date = { startDate: "", endDate: "" };
-		}
-		
-		if( !date.startDate || date.startDate == "" ){
-			range.startDate = ( this.allowEmpty )? "" : now;
-		}else{
-			range.startDate = date.startDate;
-		}
-		
-		if( !date.endDate || date.endDate == "" ){
-			range.endDate = ( this.allowEmpty )? "" : now;
-		}else{
-			range.endDate = date.endDate;
-		}
-
-		// this.setRange( range );
-
-		this.dateFields[0].retrieve( "Class" ).setValue( range.startDate );
-		this.dateFields[1].retrieve( "Class" ).setValue( range.endDate );
-
-	},
-	
-	setRange: function( date ){
-		this.dateFields[0].retrieve( "Class" ).setDate( date.startDate );
-		this.dateFields[1].retrieve( "Class" ).setDate( date.endDate );
+		// this.dp.setStartEndDate = 
+		// this.dateFields[0].retrieve( "Class" ).setValue( range.startDate );
+		// this.dateFields[1].retrieve( "Class" ).setValue( range.endDate );
 	},
 
 	getDates: function(){
-		var startDate = this.dateFields[0].retrieve("Class").getDate();
-		var endDate = this.dateFields[1].retrieve("Class").getDate();
-		return { startDate: startDate, endDate: endDate };
+		Picker.Data.Range.getStartEndDate( this.dateField );
+		var dates = { startDate: startDate, endDate: endDate };
+		console.log( 'daterange.getDates', dates );
+		return dates;
 	},
 	
 	getKeyValuePair: function(){
-		var vals = this.getValue();
+		var vals = this.getStartEndDate().split( "-" );
 		var returnVal = {};
-		returnVal[ this.fieldName + "_startDate" ] = vals.startDate;
-		returnVal[ this.fieldName + "_endDate" ] = vals.endDate;
+		returnVal[ this.fieldName + "_startDate" ] = vals[0];
+		returnVal[ this.fieldName + "_endDate" ] = vals[1];
+		console.log( 'daterange.getKeyValuePair', returnVal );
 		return returnVal;
-	},
-	
-	isEndDateAfterStartDate: function(){
-		var dates, returnVal;
-		dates = this.getDates();
-		returnVal = ( ( ( dates.startDate ) && ( dates.endDate ) ) && ( this.getDates().startDate < this.getDates().endDate ) );
-		return returnVal;
-	},
-	
-	setConstraint: function( constraint ){
-		this.constraint = constraint;
-	},
-	
-	constrainDates: function( constraint ){
-		this.setConstraint( constraint );
-		switch( this.constraint ){
-			case "TOTALS":
-			case "DAILY":
-			break;
-			case "MONTHLY":
-				this.setRange( this.constrainToMonthly( this.getDates() ) );
-			break;
-			case "WEEKLY":
-				this.setRange( this.constrainToWeekly( this.getDates() ) );
-			break;
-			case "YEARLY":
-				this.setRange( this.constrainToYearly( this.getDates() ) );
-			break;
-		}
-	},
-
-	daysInMonth: function( year, month ) {
-//		var monthArray = [ 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec' ];
-	 	var dd = 32 - new Date( year, month, 32 ).getDate();
-		return dd;
-	},
-
-	constrainToMonthly: function( dates ){
-		dates.startDate.setDate(1);
-		dates.endDate.setDate( this.daysInMonth( dates.endDate.getFullYear(), dates.endDate.getMonth() ) );
-		return dates; 
-	},
-
-	constrainToWeekly: function( dates ){
-		var difference, msInDay, val, oldTime;
-		difference = dates.endDate.getTime() - dates.startDate.getTime();
-		msInDay = 86400000;
-		days = Math.round( difference / ( msInDay ) );
-		if( days%7 != 6 ){
-			//then update the end date to the most lesser end date
-			val = 7 - days%7 - 1;
-			oldTime = dates.endDate.getTime();
-			dates.endDate = new Date();
-			dates.endDate.setTime( oldTime + (7 - days%7 -1) * msInDay );
-		}
-		return dates;
-	},
-
-	constrainToYearly: function( dates ){
-		dates.startDate.setFullYear( dates.startDate.getFullYear(), 0, 1 );
-		dates.endDate.setFullYear( dates.endDate.getFullYear(), 11, 31 );
-		return dates;
 	}
-
+	
 });
 
 

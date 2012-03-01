@@ -26,7 +26,9 @@ var Picker = new Class({
 		positionOffset: {x: 0, y: 0},
 		pickerPosition: 'bottom',
 		draggable: true,
-		showOnInit: true
+		showOnInit: true,
+		columns: 1,
+		footer: false
 	},
 
 	initialize: function(options){
@@ -47,6 +49,7 @@ var Picker = new Class({
 				opacity: 0
 			}
 		}).inject(options.inject || document.body);
+		picker.addClass('column_' + options.columns);
 
 		if (options.useFadeInOut){
 			picker.set('tween', {
@@ -58,15 +61,27 @@ var Picker = new Class({
 		// Build the header
 		var header = this.header = new Element('div.header').inject(picker);
 
-		this.closeButton = new Element('div.closeButton[text=x]')
+		var title = this.title = new Element('div.title').inject(header);
+		var titleID = this.titleID = 'pickertitle-' + String.uniqueID();
+		this.titleText = new Element('div', {
+			'role': 'heading',
+			'class': 'titleText',
+			'id': titleID,
+			'aria-live': 'assertive',
+			'aria-atomic': 'true'
+		}).inject(title);
+
+		this.closeButton = new Element('div.closeButton[text=x][role=button]')
 			.addEvent('click', this.close.pass(false, this))
 			.inject(header);
 
-		var title = this.title = new Element('div.title').inject(header);
-		this.titleText = new Element('div.titleText').inject(title);
-
 		// Build the body of the picker
 		var body = this.body = new Element('div.body').inject(picker);
+
+		if (options.footer){
+			this.footer = new Element('div.footer').inject(picker);
+			picker.addClass('footer');
+		}
 
 		// oldContents and newContents are used to slide from the old content to a new one.
 		var slider = this.slider = new Element('div.slider', {
@@ -80,13 +95,6 @@ var Picker = new Class({
 			transition: Fx.Transitions.Quad.easeInOut
 		}).inject(body);
 
-		this.oldContents = new Element('div', {
-			styles: {
-				position: 'absolute',
-				top: 0
-			}
-		}).inject(slider);
-
 		this.newContents = new Element('div', {
 			styles: {
 				position: 'absolute',
@@ -94,6 +102,16 @@ var Picker = new Class({
 				left: 0
 			}
 		}).inject(slider);
+
+		this.oldContents = new Element('div', {
+			styles: {
+				position: 'absolute',
+				top: 0
+			}
+		}).inject(slider);
+
+		this.originalColumns = options.columns;
+		this.setColumns(options.columns);
 
 		// IFrameShim for select fields in IE
 		var shim = this.shim = window['IframeShim'] ? new IframeShim(picker) : null;
@@ -105,29 +123,22 @@ var Picker = new Class({
 			} : null);
 			picker.setStyle('cursor', 'move');
 		}
-
-		this.addEvent('open', function(){
-			picker.setStyle('display', 'block');
-			if (shim) shim.show();
-		}, true);
-
-		this.addEvent('hide', function(){
-			picker.setStyle('display', 'none');
-			if (shim) shim.hide();
-		}, true);
-
 	},
 
 	open: function(noFx){
 		if (this.opened == true) return this;
 		this.opened = true;
+		var self = this,
+			picker = this.picker.setStyle('display', 'block').set('aria-hidden', 'false')
+		if (this.shim) this.shim.show();
 		this.fireEvent('open');
 		if (this.options.useFadeInOut && !noFx){
-			this.picker.fade('in').get('tween').chain(function(){
-				this.fireEvent('show');
-			}.bind(this));
+			picker.get('tween').start('opacity', 1).chain(function(){
+				self.fireEvent('show');
+				this.callChain();
+			});
 		} else {
-			this.picker.setStyle('opacity', 1);
+			picker.setStyle('opacity', 1);
 			this.fireEvent('show');
 		}
 		return this;
@@ -141,13 +152,16 @@ var Picker = new Class({
 		if (this.opened == false) return this;
 		this.opened = false;
 		this.fireEvent('close');
+		var self = this, picker = this.picker, hide = function(){
+			picker.setStyle('display', 'none').set('aria-hidden', 'true');
+			if (self.shim) self.shim.hide();
+			self.fireEvent('hide');
+		};
 		if (this.options.useFadeInOut && !noFx){
-			this.picker.fade('out').get('tween').chain(function(){
-				this.fireEvent('hide');
-			}.bind(this));
+			picker.get('tween').start('opacity', 0).chain(hide);
 		} else {
-			this.picker.setStyle('opacity', 0);
-			this.fireEvent('hide');
+			picker.setStyle('opacity', 0);
+			hide();
 		}
 		return this;
 	},
@@ -203,6 +217,7 @@ var Picker = new Class({
 
 	setBodySize: function(){
 		var bodysize = this.bodysize = this.body.getSize();
+
 		this.slider.setStyles({
 			width: 2 * bodysize.x,
 			height: bodysize.y
@@ -218,11 +233,44 @@ var Picker = new Class({
 		});
 	},
 
-	setContent: function(){
-		var content = Array.from(arguments), fx;
+	setColumnContent: function(column, content){
+		var columnElement = this.columns[column];
+		if (!columnElement) return this;
 
-		if (['right', 'left', 'fade'].contains(content[1])) fx = content[1];
-		if (content.length == 1 || fx) content = content[0];
+		var type = typeOf(content);
+		if (['string', 'number'].contains(type)) columnElement.set('text', content);
+		else columnElement.empty().adopt(content);
+
+		return this;
+	},
+
+	setColumnsContent: function(content, fx){
+		var old = this.columns;
+		this.columns = this.newColumns;
+		this.newColumns = old;
+
+		content.forEach(function(_content, i){
+			this.setColumnContent(i, _content);
+		}, this);
+		return this.setContent(null, fx);
+	},
+
+	setColumns: function(columns){
+		var _columns = this.columns = new Elements, _newColumns = this.newColumns = new Elements;
+		for (var i = columns; i--;){
+			_columns.push(new Element('div.column').addClass('column_' + (columns - i)));
+			_newColumns.push(new Element('div.column').addClass('column_' + (columns - i)));
+		}
+
+		var oldClass = 'column_' + this.options.columns, newClass = 'column_' + columns;
+		this.picker.removeClass(oldClass).addClass(newClass);
+
+		this.options.columns = columns;
+		return this;
+	},
+
+	setContent: function(content, fx){
+		if (content) return this.setColumnsContent([content], fx);
 
 		// swap contents so we can fill the newContents again and animate
 		var old = this.oldContents;
@@ -230,9 +278,7 @@ var Picker = new Class({
 		this.newContents = old;
 		this.newContents.empty();
 
-		var type = typeOf(content);
-		if (['string', 'number'].contains(type)) this.newContents.set('text', content);
-		else this.newContents.adopt(content);
+		this.newContents.adopt(this.columns);
 
 		this.setBodySize();
 
@@ -276,8 +322,15 @@ var Picker = new Class({
 		return this.picker;
 	},
 
-	setTitle: function(text){
-		this.titleText.set('text', text);
+	setTitle: function(content, fn){
+		if (!fn) fn = Function.from;
+		this.titleText.empty().adopt(
+			Array.from(content).map(function(item, i){
+				return typeOf(item) == 'element'
+					? item
+					: new Element('div.column', {text: fn(item, this.options)}).addClass('column_' + (i + 1));
+			}, this)
+		);
 		return this;
 	},
 
