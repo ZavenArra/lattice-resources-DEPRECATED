@@ -1123,7 +1123,7 @@ lattice.ui.TimePicker = new Class({
 /*	Class: lattice.ui.DateRangePicker
 	Datepicker with two fields, and range validation 
 */
-lattice.ui.DateRangePicker = new Class({
+lattice.ui.DateRange = new Class({
 
 	Extends: lattice.ui.UIField,
 		
@@ -1140,9 +1140,9 @@ lattice.ui.DateRangePicker = new Class({
 		this.dateField = this.element.getElement("input");
 		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
 		this.startView = ( this.element.getData('startview') )? this.element.getData('startview') : this.options.startView;
-		this.dp = new Picker.Date.Range( element, {
-			toggle: this.dateField,
+		this.dp = new Picker.Date.Range( this.dateField, {
 			columns: 3,
+			format: '%m/%d/%Y',
 			onSelect: this.onSelect.bind( this )
 		});
 		
@@ -1151,6 +1151,7 @@ lattice.ui.DateRangePicker = new Class({
 	onSelect: function( e ){
 		lattice.util.stopEvent( e );
 		this.submit();
+		this.element.getElement(".spinner").removeClass("hidden");
 		if( this.options.onSelectCallback ) this.options.onSelectCallback();
 	},
 	
