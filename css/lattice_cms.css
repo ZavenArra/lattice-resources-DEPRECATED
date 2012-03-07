@@ -52,6 +52,12 @@ h4 img{
 	margin:0;
 }
 
+.roundedInput{
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
 #adminHeader{
 	margin-bottom: 2em;
 	clear: both;
@@ -241,18 +247,17 @@ ul.listing li{
 	Associator 
 --------------------------------------------------
 */
+
 .associator{
 	margin-top: 1.5em;
+	position: relative;
 }
 
-.associator h4{
+.associator ul li h4{
 	padding-bottom: .5em;
 	margin-bottom: .5em;
-	border-bottom: 1px #ededed solid;
-}
-
-.associator ul{
-	display: relative;
+	position: static;
+	font-size: 1em;
 }
 
 .associator .associated{
@@ -263,23 +268,29 @@ ul.listing li{
 	clear: both;
 }
 
-.associator .poolcontainer{
-/*	display: none;
-*/
-	padding-top: 1.5em;
+.associator .pool{
+	padding-top: .5em;
+	background: url( ../images/top_dropshadow.png ) repeat-x;
 }
 
 .associator ul li{
 	float: left;
-	width: 200px;
-	height: 64px;
 	padding: 12px;
-	margin: 1em 10px 0 10px;
+	margin: 1em 5px 0 5px;
 }
 
 .associator .actuator{
 	clear: both;
 	padding: .5em 1em;
+	border-bottom: 1px #eee solid;
+}
+
+.associator input{
+	margin-top: .25em;
+	margin-right: .5em;
+	display: inline-block;
+	font-size: .875em;
+	line-height: 1.25em;
 }
 
 .associator .actuator .icon,
@@ -310,11 +321,14 @@ ul.listing li{
 .associator .pool li:hover .itemControls a.associate,
 .associator .associated li:hover .itemControls a.dissociate{
 	position: absolute;
-	padding-left: 3em;
 	display:block;
 	width: 100%;
 	height: 100%;
 	text-align: center;
+	text-decoration: none;
+	line-height:`6em;
+	color:#aaa;
+	vertical-align: middle;
 }
 
 .associator .itemControls a.associate{
@@ -348,9 +362,14 @@ ul.listing li{
 	background-position: bottom left;
 }
 
+.associator .filter{
+	margin-left: 2em;
+}
 .associator .filter input{
-	display: block;
-	float: left;
+	display: inline-block;
+}
+.associator .filter .button{
+	float: none;
 }
 /* /////////////////////////////////////////////////////////// */
 

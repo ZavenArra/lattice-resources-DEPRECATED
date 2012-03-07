@@ -480,7 +480,11 @@ lattice.modules.CMSPage = new Class({
 		var elementClass, classPath, newModule, ref;
 		elementClass = anElement.get( 'class' );
 		classPath = lattice.util.getValueFromClassName( "classPath", elementClass ).split( "_" );
-		classPath.each( function( node ){ ref = ( !ref )? this[node] : ref[node]; });
+		classPath.each( function( node ){ 
+			console.log("::::::", node );
+			ref = ( !ref )? this[node] : ref[node]; 
+		});
+		console.log("::::", elementClass, this.marshal );
 		newModule = new ref( anElement, this.marshal );
 		return newModule;		
 	},
@@ -488,7 +492,7 @@ lattice.modules.CMSPage = new Class({
 	clearContent: function(){
 		this.destroyChildModules( this.element );
 		this.destroyUIFields( this.element );
-		console.log( ">>>>>> ", this.element );
+//		console.log( ">>>>>> ", this.element );
 		if( this.element ) this.element.empty();
 	},
 	

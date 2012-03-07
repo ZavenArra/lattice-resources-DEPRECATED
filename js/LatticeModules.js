@@ -625,17 +625,9 @@ lattice.modules.LatticeRadioAssociator = new Class({
 	/* TODO write unit tests for List*/
 	Extends: lattice.modules.Module,
 	// listing properties and members, helps with maintenance and destruction.... standard practice from now on
-	sortable: null,
-	sortDirection: null,
 	instanceName: null,
 	items: null,
 	controls: null,
-	associated: null,
-	pool: null,
-	sortableList: null,
-	scroller: null,
-	submitDelay: null,
-	oldSort: null,
 	
 	/* Section: Getters & Setters */
 	
@@ -652,7 +644,7 @@ lattice.modules.LatticeRadioAssociator = new Class({
 	},
 
 	toString: function(){
-		return "[ Object, lattice.LatticeObject, lattice.modules.Module, lattice.modules.LatticeAssociator ]";
+		return "[ Object, lattice.LatticeObject, lattice.modules.Module, lattice.modules.LatticeRadioAssociator ]";
 	},
 
 	radioClicked: function( e, el ){
@@ -675,7 +667,7 @@ lattice.modules.LatticeRadioAssociator = new Class({
 	},
 
 	onAssociateResponse: function( json ){
-//		lattice.log( "onAssociateResponse", json );
+		lattice.log( "onAssociateResponse", json );
 	},
 
 	dissociateRequest: function( objid ){
@@ -689,7 +681,7 @@ lattice.modules.LatticeRadioAssociator = new Class({
 	},
 
 	onDissociateResponse: function( json, item ){
-//		lattice.log( "onDissociateResponse", json );
+		lattice.log( "onDissociateResponse", json );
 	},
 
 	clearField: function( fieldName ){
@@ -699,8 +691,6 @@ lattice.modules.LatticeRadioAssociator = new Class({
 	initialize: function( anElement, aMarshal, options ){
 		this.parent( anElement, aMarshal, options );
 		this.objectId = this.element.get( 'data-objectid' );
-//		this.allowChildSort = ( this.options.allowChildSort == 'true' )? true : false;
-		this.allowChildSort = ( this.element.get('data-allowchildsort') == 'true' )? true : false;
 	},
 	
 	build: function(){
@@ -714,31 +704,6 @@ lattice.modules.LatticeRadioAssociator = new Class({
 			console.log( "Active Id:", this.activeItem );
 		}
 	},	
-	
-	initItems: function(){
-//		lattice.log(">>>>>>>>>>>>>>>>", this.element.getElements( "ul.associated li" ), this.element.getElements( "ul.pool li" ))
-    var items = this.element.getElements( "ul.associated li" ).combine( this.element.getElements( "ul.pool li" ) );
-		items.each( function( el ){
-			this.initItem( el );
-		}, this );
-  },
-
-	initItem: function( el ){
-		var classPath, ref, newItem;
-		classPath = el.getData('classpath');
-		if(!classPath){
-			newItem = new lattice.modules.AssociatorItem( el, this );
-		} else {
-			ref = this.getClassFromClassPath( classPath, '.' );
-			if( ref ){
-				newItem = new ref( el, this );
-			} else {
-				throw "classPath " + classPath + "  for element: " + el + " is referring to a class that is not loaded or does not exist";
-				return false;
-			}
-		}
-		return newItem;
-	},
 
 	initControls: function(){
 			this.controls = this.element.getChildren( ".controls" );
@@ -748,27 +713,100 @@ lattice.modules.LatticeRadioAssociator = new Class({
 				}, this );
 			}, this );
 		},
-   
-    getClassFromClassPath: function( classPath, delimiter ){
-      var ref;
-      delimiter = ( !delimiter )? "_" : delimiter;
-      classPath = classPath.split( delimiter );
-      classPath.each( function( node ){
-         ref = ( !ref )? this[node] : ref[node]; 
-      });
-      return ref;
-   },
 
 	destroy: function(){
-		if(this.sortableList) this.removeSortable( this.sortableList );
-		clearInterval( this.submitDelay );
-		this.controls = this.instanceName = this.pool = this.associated = this.oldSort = this.allowChildSort, this.sortDirection, this.submitDelay = null;
-    if( this.scroller ) this.scroller = null;
+		this.controls = this.instanceName = null;
 		lattice.util.EventManager.broadcastMessage( 'resize' );
 		this.parent();
 	}
 
 });
+
+
+lattice.modules.LatticeCheckboxAssociator = new Class({
+
+	/* TODO write unit tests for List*/
+	Extends: lattice.modules.Module,
+	// listing properties and members, helps with maintenance and destruction.... standard practice from now on
+	instanceName: null,
+	items: null,
+	controls: null,
+	
+	/* Section: Getters & Setters */
+	
+	getAssociateURL: function(){
+	    throw "Abstract function getAssociateURL must be overriden in" + this.toString();
+	},
+	
+	getDissociateURL: function(){
+	    throw "Abstract function getDissociateURL must be overriden in" + this.toString();
+	},
+
+	getSubmitSortOrderURL: function(){ 
+	    throw "Abstract function getSubmitSortOrderURL must be overriden in" + this.toString();
+	},
+
+	toString: function(){
+		return "[ Object, lattice.LatticeObject, lattice.modules.Module, lattice.modules.LatticeCheckboxAssociator ]";
+	},
+
+	onItemClicked: function( e, el ){
+		console.log( 'onItemClicked', el );
+		if( el.get("checked") ){
+			// uncheck
+			el.addClass("active");			
+			this.associateRequest( el );
+		}else{
+			el.removeClass("active");
+			this.dissociateRequest( el );
+		}
+	},
+	
+	associateRequest: function( el ){
+		lattice.log( 'associateRequest', el );
+		return new Request.JSON({
+			url: this.getAssociateURL( this.getObjectId(), el.get('data-objectid'), this.element.get('data-lattice')  ), 
+			onSuccess: function( json ){ this.onAssociateResponse( json ); }.bind( this )
+		}).send();
+	},
+
+	onAssociateResponse: function( json ){
+		lattice.log( "onAssociateResponse", json );
+	},
+
+	dissociateRequest: function( el ){
+		lattice.log( 'dissociateRequest', el.get('data-objectid') );
+		lattice.util.EventManager.broadcastMessage( "resize" );          
+		var jsonRequest = new Request.JSON({
+			url: this.getDissociateURL( this.getObjectId(), el.get('data-objectid'), this.element.get('data-lattice') ),
+			onSuccess: function( json ){ this.onDissociateResponse( json ); }.bind( this )
+		}).send();
+		return jsonRequest;
+	},
+
+	onDissociateResponse: function( json, item ){
+		lattice.log( "onDissociateResponse", json );
+	},
+
+	initialize: function( anElement, aMarshal, options ){
+		this.parent( anElement, aMarshal, options );
+		this.objectId = this.element.get( 'data-objectid' );
+	},
+	
+	build: function(){
+		this.parent();
+		this.element.getElements('input[type=checkbox]').each( function( el ){
+			el.addEvent( 'click', this.onItemClicked.bindWithEvent( this, el ) );
+		}, this );
+	},	
+
+	destroy: function(){
+		this.controls = this.instanceName  = null;
+		this.parent();
+	}
+
+});
+
 
 lattice.modules.LatticeAssociator = new Class({
 
@@ -838,8 +876,9 @@ lattice.modules.LatticeAssociator = new Class({
 		this.associated = this.element.getElement( 'ul.associated' );
 		this.poolContainer = this.element.getElement('.poolcontainer');
 		this.poolList = this.element.getElement( 'ul.pool' );
+		this.filter = this.element.getElement( '.filter' );
 		this.element.getElements( '.shadow' ).each( function( el ){
-			el.addBoxShadow( "1px 1px 4px #dedede");
+			el.addBoxShadow( "1px 1px 2px #aaa");
 		});
 		this.poolMorph = new Fx.Morph( this.poolContainer, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
 
@@ -854,11 +893,16 @@ lattice.modules.LatticeAssociator = new Class({
 						"height": 0,
 						"display": "block"
 					});
+					this.poolContainer.removeClass('hidden');
 					this.poolMorph.start({
 						"opacity": 1,
 						"height": "auto",
 						"display": "block"				
 					});
+					console.log( ">>>", this.poolList.getChildren().length );
+					if( this.filter && this.poolList.getChildren().length >= 12 ){
+						this.filter.removeClass('hidden');
+					}
 			}else{
 				this.actuator.removeClass('open');
 				this.actuator.addClass('closed');
@@ -866,12 +910,16 @@ lattice.modules.LatticeAssociator = new Class({
 					"opacity": 0,
 					"height": 0
 				});				
+				if( this.filter ) this.filter.addClass('hidden');
 			}
 		}.bindWithEvent( this ) );
 		this.initControls();
 		this.initItems();
-		this.filterSubmitButton = this.element.getElement(".filter .button");
+
+		this.filterSubmitButton = this.element.getElement(".filterButton");
+
 		this.filterSubmitButton.addEvent('click', this.filterPoolByWord.bindWithEvent( this ) );
+
 		this.makeSortable( this.associated );
 
 	},	
