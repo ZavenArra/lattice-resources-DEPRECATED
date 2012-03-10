@@ -16,6 +16,35 @@ if (!window.console ){ window.console = {};
 	Section: Extending Mootools
 */
 
+
+/*
+Fix for known bug with getScrolls that breaks toElementCenter slated for mootools 2.0 or 1.4 whichever comes first
+https://mootools.lighthouseapp.com/projects/24057-mootoolsmore/tickets/538-toelementcenter-scrolls-to-incorrect-position
+*/
+Fx.Scroll.implement(
+{
+    toElementCenter: function (el, axes, offset) {
+      axes = axes ? Array.from(axes) : ['x', 'y'];
+      el = document.id(el);
+      var to = {},
+        position = el.getPosition(this.element),
+        size = el.getSize(),
+        scroll = this.element.getScroll(),
+        containerSize = this.element.getSize();
+  
+      ['x', 'y'].each(function(axis) {
+        if (axes.contains(axis)) {
+          to[axis] = scroll[axis] + position[axis] - (containerSize[axis] - size[axis]) / 2;
+        }
+        if (to[axis] == null) to[axis] = scroll[axis];
+        if (offset && offset[axis]) to[axis] = to[axis] + offset[axis];
+      }, this);
+      
+      if (to.x != scroll.x || to.y != scroll.y) this.start(to.x, to.y);
+      return this;
+    }
+});
+
 /*
 Class: Interfaces
 description: Interfaces provides some Interface functionality to Class (and also provides an Interface Object)
