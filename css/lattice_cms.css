@@ -275,7 +275,7 @@ blockquote {
 	font-style:italic;
 }
 
-#container { height: 100%; margin:0 auto; }
+#container { margin:0 auto; }
 
 legend {
 	position: static;
@@ -373,7 +373,7 @@ ul.listing li{
 
 .associator .pool{
 	padding-top: .5em;
-	background: url( ../images/top_dropshadow.png ) repeat-x;
+	border-bottom: 1px #eee solid;
 }
 
 .associator ul.pool{
@@ -1507,11 +1507,13 @@ ul.tokens{
 
 .pagesPane{
 	margin-top: 2em;
-	width: 968px;
+	width: 960px;
 /*	overflow: hidden;
-*/}
+*//*	height: auto;*/
+}
 
 .page{
 	width: 960px;
 	float: left;
+	background:#dedede;
 }

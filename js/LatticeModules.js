@@ -870,6 +870,14 @@ lattice.modules.LatticeAssociator = new Class({
 		return jsonRequest;
 	},
 
+	onFilteredPoolReceived: function( json ){
+		this.pool.empty();
+		console.log( "onFilteredPoolReceived", json );
+		this.pool.set( "html",  json.response.html );
+		this.initItems();
+//		this.pool.adopt()
+	},
+	
 	build: function(){
 		this.parent();
 		this.actuator = this.element.getElement('.actuator a.icon');
