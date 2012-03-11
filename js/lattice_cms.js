@@ -176,7 +176,8 @@ lattice.modules.CMS = new Class({
 
 		w = this.element.getElement('.pagesPane').getDimensions().width;
 		pageCount = Object.getLength( this.pages );
-		w *= pageCount + 1;
+		w *= pageCount;
+		console.log( "W", w )
 		this.pageContainer.setStyle( "width", w );
 
 		this.currentPage.populate( html );

@@ -242,7 +242,6 @@ input, textarea{
 
 .displayField{
 	color:#333;
-	background:#eee;
 }
 
 p {
@@ -1515,5 +1514,4 @@ ul.tokens{
 .page{
 	width: 960px;
 	float: left;
-	background:#dedede;
 }
