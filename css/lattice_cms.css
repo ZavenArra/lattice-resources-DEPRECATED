@@ -377,6 +377,7 @@ ul.listing li{
 }
 
 .associator ul.pool{
+
 	max-height: 32em;
 	overflow: auto;
 }
@@ -1507,8 +1508,8 @@ ul.tokens{
 .pagesPane{
 	margin-top: 2em;
 	width: 968px;
-	overflow: hidden;
-}
+/*	overflow: hidden;
+*/}
 
 .page{
 	width: 960px;

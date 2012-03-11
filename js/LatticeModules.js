@@ -941,7 +941,7 @@ lattice.modules.LatticeAssociator = new Class({
 			if(ref){
 				newItem = new ref( el, this );
 			} else {
-				throw "classPath " + classPath + "  for element: " + el + " is referring to a class that is not loaded or does not exist";
+				throw "classPath " + classPath + " for element: " + el + " is referring to a class that is not loaded or does not exist";
 				return false;
 			}
 		}
