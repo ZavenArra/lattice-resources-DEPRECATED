@@ -376,6 +376,10 @@ ul.listing li{
 	background: url( ../images/top_dropshadow.png ) repeat-x;
 }
 
+.associator ul.pool{
+	max-height: 32em;
+	overflow: auto;
+}
 .associator ul li{
 	float: left;
 	padding: 12px;
