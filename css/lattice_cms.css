@@ -500,10 +500,12 @@ ul.listing li{
 	margin-left: .5em;
 }
 
+.file img,
 .ui-FileElement img{
 	border: .5em #eee solid;
 }
 
+.file .wrapper,
 .cluster .wrapper,
 .ui-FileElement .wrapper,
 .ui-ImageFile .wrapper,
@@ -1376,6 +1378,7 @@ ul.listing li.menuItem:hover{
 	-khtml-border-radius: 4px;
 	border-radius: 4px;	
 	padding: .75em .5em .5em .5em;
+	margin-bottom: 1em;
 	background:#f9f9f9;
 }
 

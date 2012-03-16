@@ -855,7 +855,6 @@ lattice.modules.LatticeAssociator = new Class({
 	initialize: function( anElement, aMarshal, options ){
 		this.parent( anElement, aMarshal, options );
 		this.objectId = this.element.get( 'data-objectid' );
-//	this.allowChildSort = ( this.options.allowChildSort == 'true' )? true : false;
 		this.allowChildSort = ( this.element.get('data-allowchildsort') == 'true' )? true : false;
 	},
 	
@@ -977,7 +976,9 @@ lattice.modules.LatticeAssociator = new Class({
 	
 	associateRequest: function( item ){
 //		lattice.log( 'addObjectRequest', item );
-		this.associated.grab( item.getElement() );
+		var el = item.getElement();
+		this.associated.grab( el );
+		this.sortableList.addItem( el );
 		return new Request.JSON( {url: this.getAssociateURL( this.getObjectId(), item.getObjectId(), this.element.get('data-lattice')  ), onSuccess: function( json ){ this.onAssociateResponse( json, item ); }.bind( this ) } ).send();
 	},
     
@@ -993,6 +994,7 @@ lattice.modules.LatticeAssociator = new Class({
 		lattice.log("dissociate", item, item.getObjectId(), this.poolList );
     item.element.spin();
 		this.poolList.grab( item.element );
+		this.sortableList.removeItems( item.element );
 		lattice.util.EventManager.broadcastMessage( "resize" );          
 		var jsonRequest = new Request.JSON( { url: this.getDissociateURL( this.getObjectId(), item.getObjectId(), this.element.get('data-lattice') ), onSuccess: function( json ){ this.onDissociateResponse( json, item ); }.bind( this ) } ).send();
 		return jsonRequest;
@@ -1003,7 +1005,7 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 	
 	makeSortable: function(){
-		if( this.allowChildSort && !this.sortableList ){
+		if( !this.sortableList ){
 			this.sortableList = new lattice.ui.Sortable( this.container, this, $( document.body ) );
 		}else if( this.allowChildSort ){
 			this.sortableList.attach();
