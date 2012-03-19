@@ -372,10 +372,6 @@ lattice.modules.LatticeList = new Class({
 	initialize: function( anElement, aMarshal, options ){
 		this.parent( anElement, aMarshal, options );
 		this.objectId = this.element.get( 'data-objectid' );
-		// lattice.log( "============================================" );
-		// lattice.log( "element", anElement );
-		// lattice.log( "options", this.options );
-		// lattice.log( "============================================" );
 		this.allowChildSort = ( this.options.allowChildSort == 'true' )? true : false;
 		this.makeSortable( this.listing );
 	},
@@ -807,7 +803,6 @@ lattice.modules.LatticeCheckboxAssociator = new Class({
 
 });
 
-
 lattice.modules.LatticeAssociator = new Class({
 
 	/* TODO write unit tests for List*/
@@ -879,7 +874,7 @@ lattice.modules.LatticeAssociator = new Class({
 	
 	build: function(){
 		this.parent();
-		this.actuator = this.element.getElement('.actuator a.icon');
+		this.actuator = this.element.getElement('.actuator a.actuatorButton');
 		this.associated = this.element.getElement( 'ul.associated' );
 		this.poolContainer = this.element.getElement('.poolcontainer');
 		this.poolList = this.element.getElement( 'ul.pool' );
@@ -887,7 +882,7 @@ lattice.modules.LatticeAssociator = new Class({
 		this.element.getElements( '.shadow' ).each( function( el ){
 			el.addBoxShadow( "1px 1px 2px #aaa");
 		});
-		this.poolMorph = new Fx.Morph( this.poolContainer, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
+		this.poolMorph = new Fx.Morph( this.poolList, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
 
 		this.actuator.addEvent( 'click', function(e){
 			e.stop();
@@ -895,12 +890,12 @@ lattice.modules.LatticeAssociator = new Class({
 			if( this.actuator.hasClass('closed')){
 					this.actuator.removeClass('closed');
 					this.actuator.addClass('open');
-					this.poolContainer.setStyles({
+					this.poolList.setStyles({
 						"opacity": 0,
 						"height": 0,
 						"display": "block"
 					});
-					this.poolContainer.removeClass('hidden');
+					// this.poolList.removeClass('hidden');
 					this.poolMorph.start({
 						"opacity": 1,
 						"height": "auto",
@@ -943,6 +938,7 @@ lattice.modules.LatticeAssociator = new Class({
 		classPath = el.getData('classpath');
 		if(!classPath){
 			newItem = new lattice.modules.AssociatorItem( el, this );
+			console.log( 'initItem', el, newItem );
 		} else {
 			ref = this.getClassFromClassPath( classPath, '.' );
 			if(ref){
@@ -975,10 +971,12 @@ lattice.modules.LatticeAssociator = new Class({
    },
 	
 	associateRequest: function( item ){
-//		lattice.log( 'addObjectRequest', item );
-		var el = item.getElement();
+//		lattice.log( 'addObjectRequest', item, this.toString() );
+		var el = item.element;
 		this.associated.grab( el );
-		this.sortableList.addItem( el );
+		el.spin();
+		this.sortableList.addItems( el );
+		this.onOrderChanged();
 		return new Request.JSON( {url: this.getAssociateURL( this.getObjectId(), item.getObjectId(), this.element.get('data-lattice')  ), onSuccess: function( json ){ this.onAssociateResponse( json, item ); }.bind( this ) } ).send();
 	},
     
@@ -992,8 +990,9 @@ lattice.modules.LatticeAssociator = new Class({
 
 	dissociateRequest: function( item ){
 		lattice.log("dissociate", item, item.getObjectId(), this.poolList );
-    item.element.spin();
 		this.poolList.grab( item.element );
+    item.element.spin();
+		this.onOrderChanged();
 		this.sortableList.removeItems( item.element );
 		lattice.util.EventManager.broadcastMessage( "resize" );          
 		var jsonRequest = new Request.JSON( { url: this.getDissociateURL( this.getObjectId(), item.getObjectId(), this.element.get('data-lattice') ), onSuccess: function( json ){ this.onDissociateResponse( json, item ); }.bind( this ) } ).send();
@@ -1005,9 +1004,10 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 	
 	makeSortable: function(){
+		console.log( "makeSortable", this.sortableList );
 		if( !this.sortableList ){
-			this.sortableList = new lattice.ui.Sortable( this.container, this, $( document.body ) );
-		}else if( this.allowChildSort ){
+			this.sortableList = new lattice.ui.Sortable( this.associated, this, $( document.body ) );
+		}else{
 			this.sortableList.attach();
 		}
 		this.oldSort = this.serialize();
@@ -1029,13 +1029,15 @@ lattice.modules.LatticeAssociator = new Class({
 	
 	onOrderChanged: function(){
 		var newOrder = this.serialize();
+		console.log("onOrderChanged", newOrder );
 		clearInterval( this.submitDelay );
 		this.submitDelay = this.submitSortOrder.periodical( 3000, this, newOrder.join(",") );
 		newOrder = null;
 	},
 	
 	submitSortOrder: function( newOrder ){
-		if( this.allowChildSort && this.oldSort != newOrder ){
+		console.log( 'submitSortOrder', this.getSubmitSortOrderURL(), this.oldSort != newOrder );
+		if( this.oldSort != newOrder ){
 			clearInterval( this.submitDelay );
 			this.submitDelay = null;
      	var request = new Request.JSON( {url: this.getSubmitSortOrderURL()} ).post( {sortOrder: newOrder} );
@@ -1048,11 +1050,9 @@ lattice.modules.LatticeAssociator = new Class({
 		var sortArray, listItemId, listItemIdSplit;
 		sortArray = [];
 		this.associated.getChildren("li").each( function ( aListing ){
-	    if( aListing.get( "id" ) ){
-        listItemId = aListing.get("id");
-        listItemIdSplit = listItemId.split( "_" );
-        listItemId = listItemIdSplit[ listItemIdSplit.length - 1 ];
-        sortArray.push( listItemId );		        
+			console.log( aListing.get('data-objectid') );
+	    if( aListing.get( "data-objectid" ) ){
+        sortArray.push( aListing.get("data-objectid") );		        
 	    }
 		});
 		return sortArray;
@@ -1129,15 +1129,15 @@ lattice.modules.AssociatorItem = new Class({
 	
 	associate: function( e ){
 		lattice.util.stopEvent( e );
-//	this.addClass('associated');
+		console.log(  'associate', this.marshal, this.marshal.sortableList );
+		this.element.addClass('associated');
 		if( this.marshal.sortableList != null ) this.marshal.onOrderChanged();
-		this.element.spin();
 		this.marshal.associateRequest( this );
 	},
 	
 	dissociate: function( e ){
 		lattice.util.stopEvent( e );
-//	this.removeClass('associated');
+		this.element.removeClass('associated', this.marshal, this.marshal.sortableList );
 		if( this.marshal.sortableList != null ) this.marshal.onOrderChanged();
 		this.marshal.dissociateRequest( this );
 	},

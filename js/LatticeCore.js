@@ -21,8 +21,7 @@ if (!window.console ){ window.console = {};
 Fix for known bug with getScrolls that breaks toElementCenter slated for mootools 2.0 or 1.4 whichever comes first
 https://mootools.lighthouseapp.com/projects/24057-mootoolsmore/tickets/538-toelementcenter-scrolls-to-incorrect-position
 */
-Fx.Scroll.implement(
-{
+Fx.Scroll.implement({
     toElementCenter: function (el, axes, offset) {
       axes = axes ? Array.from(axes) : ['x', 'y'];
       el = document.id(el);
