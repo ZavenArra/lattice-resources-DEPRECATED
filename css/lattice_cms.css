@@ -412,53 +412,6 @@ ul.listing li{
 	text-indent: 2em !important;
 }
 
-.associator .itemControls{
-	display:none;
-	position: absolute;
-
-	top: 50%;
-	width: 24px;
-	height: 24px;
-}
-
-.associated.empty{
-	border: 1px #aaa dotted;
-	min-height: 3em;
-}
-.associator .itemControls .dissociate,
-.associator .itemControls .associate{
-	display: none;
-}
-
-.associator .pool li:hover .itemControls,
-.associator .associated li:hover .itemControls{
-	display: block;
-}
-
-.associator .pool li:hover .itemControls a.associate,
-.associator .associated li:hover .itemControls a.dissociate{
-	position: absolute;
-	display:block;
-
-	left: -50%;
-	width: 24px;
-	height: 24px;
-	text-align: center;
-	text-decoration: none;
-/*	line-height:`6em;
-*/	color:#aaa;
-	vertical-align: middle;
-	text-indent: -30000px;
-	
-}
-
-.associator .itemControls a.associate{
-	background: url( ../images/sprite_associate_dissociate.png ) top center no-repeat;
-}
-
-.associator .itemControls a.dissociate{
-	background: url( ../images/sprite_associate_dissociate.png ) bottom center no-repeat;
-}
 
 .associator .actuator a.actuatorButton{
 	display: block;
@@ -481,6 +434,53 @@ ul.listing li{
 
 .associator .actuator a.icon.open:hover{
 	background-position: 0px 16px;
+}
+
+.associated.empty{
+	border: 1px #aaa dotted;
+	min-height: 3em;
+}
+.associator .itemControls .dissociate,
+.associator .itemControls .associate{
+	display: none;
+}
+
+.associator .itemControls{
+	display:none;
+	position: absolute;
+	top: 50%;
+	width: 24px;
+	height: 24px;
+}
+
+.associator .pool li:hover .itemControls,
+.associator .associated li:hover .itemControls{
+	display: block;
+}
+
+.associator .pool li:hover .itemControls a.associate,
+.associator .associated li:hover .itemControls a.dissociate{
+	position: absolute;
+	display:block;
+	top:-50%;
+	left: -50%;
+	width: 24px;
+	height: 24px;
+	text-align: center;
+	text-decoration: none;
+/*	line-height:`6em;
+*/	color:#aaa;
+	vertical-align: middle;
+	text-indent: -30000px;
+	
+}
+
+.associator .itemControls a.associate{
+	background: url( ../images/sprite_associate_dissociate.png ) top center no-repeat;
+}
+
+.associator .itemControls a.dissociate{
+	background: url( ../images/sprite_associate_dissociate.png ) bottom center no-repeat;
 }
 
 .associator .filter{
