@@ -989,7 +989,7 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 
 	dissociateRequest: function( item ){
-		lattice.log("dissociate", item, item.getObjectId(), this.poolList );
+		// lattice.log("dissociate", item, item.getObjectId(), this.poolList );
 		this.poolList.grab( item.element );
     item.element.spin();
 		this.onOrderChanged();
@@ -1004,7 +1004,7 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 	
 	makeSortable: function(){
-		console.log( "makeSortable", this.sortableList );
+		// console.log( "makeSortable", this.sortableList );
 		if( !this.sortableList ){
 			this.sortableList = new lattice.ui.Sortable( this.associated, this, $( document.body ) );
 		}else{
@@ -1040,7 +1040,7 @@ lattice.modules.LatticeAssociator = new Class({
 		if( this.oldSort != newOrder ){
 			clearInterval( this.submitDelay );
 			this.submitDelay = null;
-     	var request = new Request.JSON( {url: this.getSubmitSortOrderURL()} ).post( {sortOrder: newOrder} );
+     	var request = new Request.JSON( {url: this.getSubmitSortOrderURL( this.getObjectId(), this.element.get('data-lattice') ) } ).post( {sortOrder: newOrder} );
 			this.oldSort = newOrder;
 			return request;
 		}

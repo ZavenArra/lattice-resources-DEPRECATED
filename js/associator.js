@@ -22,8 +22,8 @@ lattice.modules.Associator = new Class({
 		return url;
 	},
 	
-	getSubmitSortOrderURL: function(){
-		var url = lattice.util.getBaseURL() + "ajax/data/associator/saveSortOrder/" + this.getObjectId();
+	getSubmitSortOrderURL: function( itemid, latticeid ){
+		var url = lattice.util.getBaseURL() + "ajax/data/cms/saveSortOrder/" + itemid + "/" + latticeid;
 		lattice.log( '\t\getSubmitSortOrderURL', url );
 		return url;
 	},

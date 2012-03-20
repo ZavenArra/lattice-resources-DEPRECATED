@@ -353,15 +353,11 @@ ul.listing li{
 .associator{
 	margin-top: 1.5em;
 	position: relative;
-	cursor: move;
 }
 
 .associator ul li h4{
 	position: static;
 	font-size: 1em;
-}
-
-.associator .associated{
 }
 
 .associator .associated{
@@ -390,6 +386,10 @@ ul.listing li{
 	border-radius: 5px;
 }
 
+.associator .associated li{
+	cursor: move;
+}
+
 .associator .actuator{
 	clear: both;
 	padding: .5em 1em;
@@ -415,7 +415,7 @@ ul.listing li{
 .associator .itemControls{
 	display:none;
 	position: absolute;
-	left: 50%;
+
 	top: 50%;
 	width: 24px;
 	height: 24px;
@@ -439,7 +439,7 @@ ul.listing li{
 .associator .associated li:hover .itemControls a.dissociate{
 	position: absolute;
 	display:block;
-	top: -50%;
+
 	left: -50%;
 	width: 24px;
 	height: 24px;
