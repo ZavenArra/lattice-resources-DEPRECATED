@@ -448,6 +448,7 @@ ul.listing li{
 .ghost{
 	position: absolute;
 	opacity: .7;
+	z-index: 12000;
 }
 .associator .itemControls{
 	display:none;
