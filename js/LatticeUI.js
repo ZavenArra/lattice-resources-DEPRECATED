@@ -484,31 +484,53 @@ lattice.ui.Sortable = new Class({
 	Implements: Options,
 	Extends: Sortables,	
 
+	options: {
+		clone: function(e, element){
+			var clone = element.clone(true).setStyles({
+				margin: 0,
+				position: 'absolute',
+				visibility: 'hidden',
+				width: element.getStyle('width')
+			}).addEvent('mousedown', function(event){
+				element.fireEvent('mousedown', event);
+			});
+			//prevent the duplicated radio inputs from unchecking the real one
+			if (clone.get('html').test('radio')){
+				clone.getElements('input[type=radio]').each(function(input, i){
+					input.set('name', 'clone_' + i);
+					if (input.get('checked')) element.getElements('input[type=radio]')[i].set('checked', true);
+				});
+			}
+			clone.addClass('ghost');
+			return clone.inject(this.list).setPosition(element.getPosition(element.getOffsetParent()));
+		},
+		snap: 12,
+		revert: true,
+		velocity: .9,
+		area: 24,
+		constrain: false,
+		onComplete: function( droppedItem, ghostItem ){
+			console.log( arguments );
+			this.isSorting = false; 
+			this.scroller.stop();
+			droppedItem.removeClass('ghost');
+			this.marshal.onOrderChanged( droppedItem );
+		},
+		onStart: function( item, ghostItem ){
+			this.isSorting = true; 
+			this.scroller.start();
+		},
+		onSort: function( droppedItem, ghostItem ){
+
+			//@TODO: make it so that elements cant be dragged below unsortable elements (.modules in navi for example );
+			/* requires some heavy code, must compare position against some 'upperlimit' and somehow put things back together */
+		}
+	},
 	initialize: function( anElement, marshal, scrollerTarget ){
 //	    lattice.log( ":: lattice.ui.Sortable", anElement, marshal, scrollerTarget );
 		this.marshal = marshal;
 		this.element = anElement;
-		this.parent( anElement, {
-			clone: true,
-			snap: 12,
-			revert: true,
-			velocity: .9,
-			area: 24,
-			constrain: false,
-			onComplete: function( droppedItem, ghostItem ){
-				this.isSorting = false; 
-				this.scroller.stop();
-				this.marshal.onOrderChanged( droppedItem );
-			},
-			onStart: function( ){
-				this.isSorting = true; 
-				this.scroller.start();
-			},
-			onSort: function( droppedItem, ghostItem ){
-				//@TODO: make it so that elements cant be dragged below unsortable elements (.modules in navi for example );
-				/* requires some heavy code, must compare position against some 'upperlimit' and somehow put things back together */
-			}
-	 	});
+		this.parent( anElement, this.options );
 	 	var scrollerElement = ( typeOf( scrollerTarget ) != "element" )? $( document.body ) : scrollerTarget;
 		this.scroller = new Scroller( scrollerElement, { area: 20, velocity: 1 } );
 	}

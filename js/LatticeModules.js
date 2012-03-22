@@ -1050,8 +1050,8 @@ lattice.modules.LatticeAssociator = new Class({
 		var sortArray, listItemId, listItemIdSplit;
 		sortArray = [];
 		this.associated.getChildren("li").each( function ( aListing ){
-			console.log( aListing.get('data-objectid') );
-	    if( aListing.get( "data-objectid" ) ){
+			console.log( aListing, aListing.get('data-objectid') );
+	    if( aListing.get( "data-objectid" ) && !aListing.hasClass('ghost') ){
         sortArray.push( aListing.get("data-objectid") );		        
 	    }
 		});

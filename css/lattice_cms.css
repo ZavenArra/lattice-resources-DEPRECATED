@@ -445,6 +445,10 @@ ul.listing li{
 	display: none;
 }
 
+.ghost{
+	position: absolute;
+	opacity: .7;
+}
 .associator .itemControls{
 	display:none;
 	position: absolute;
