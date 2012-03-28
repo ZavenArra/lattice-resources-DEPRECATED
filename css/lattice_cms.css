@@ -372,17 +372,17 @@ ul.listing li{
 
 .associator ul.pool{
 	padding-top: .5em;
+	min-height: 5em;
 	max-height: 32em;
 	overflow: auto;
-	background:#fff;
-	border-bottom: 1px #dedede solid;
+	background:#eee;
 }
 
 .associator ul li{
 	float: left;
 	padding: .5em;
 	margin: .5em;
-	background:#eee;
+	background:#fff;
 	border-radius: 5px;
 }
 
@@ -392,7 +392,7 @@ ul.listing li{
 
 .associator .actuator{
 	clear: both;
-	padding: .5em 1em;
+	padding: .5em 1em .5em 0;
 }
 
 .associator input{
@@ -403,6 +403,9 @@ ul.listing li{
 	line-height: 1.25em;
 }
 
+.associator .actuator h4{
+	font-size: 1em;
+}
 .associator .actuator .actuatorButton,
 .associator ul li{
 	position: relative;

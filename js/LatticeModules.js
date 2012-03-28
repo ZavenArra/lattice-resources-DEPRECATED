@@ -859,17 +859,16 @@ lattice.modules.LatticeAssociator = new Class({
 		var url = this.getFilterPoolByWordURL( this.getObjectId(), this.element.get('data-lattice'), word );
 		var jsonRequest = new Request.JSON({
 			url: url,
-			onSuccess: function( json ){ console.log( "filterPoolByWord Success", json ) }
+			onSuccess: function( json ){ this.onFilteredPoolReceived(json); }.bind( this )
 		}).send();
 		return jsonRequest;
 	},
 
 	onFilteredPoolReceived: function( json ){
-		this.pool.empty();
 		console.log( "onFilteredPoolReceived", json );
-		this.pool.set( "html",  json.response.html );
+		this.poolList.empty();
+		this.poolList.set( "html",  json.response.html );
 		this.initItems();
-//		this.pool.adopt()
 	},
 	
 	build: function(){
@@ -884,37 +883,35 @@ lattice.modules.LatticeAssociator = new Class({
 		});
 		this.poolMorph = new Fx.Morph( this.poolList, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
 
-		this.actuator.addEvent( 'click', function(e){
-			e.stop();
-			this.poolMorph.cancel();
-			if( this.actuator.hasClass('closed')){
-					this.actuator.removeClass('closed');
-					this.actuator.addClass('open');
-					this.poolList.setStyles({
-						"opacity": 0,
-						"height": 0,
-						"display": "block"
-					});
-					// this.poolList.removeClass('hidden');
-					this.poolMorph.start({
-						"opacity": 1,
-						"height": "auto",
-						"display": "block"				
-					});
-					console.log( ">>>", this.poolList.getChildren().length );
-					if( this.filter && this.poolList.getChildren().length >= 12 ){
+		if( this.actuator ){
+			this.actuator.addEvent( 'click', function(e){
+				e.stop();
+				this.poolMorph.cancel();
+				if( this.actuator.hasClass('closed')){
+						this.actuator.removeClass('closed');
+						this.actuator.addClass('open');
+						this.poolList.setStyles({
+							"opacity": 0,
+							"height": 0,
+							"display": "block"
+						});
+						// this.poolList.removeClass('hidden');
+						this.poolMorph.start({
+							"opacity": 1,
+							"height": "auto",
+							"display": "block"				
+						});
 						this.filter.removeClass('hidden');
-					}
-			}else{
-				this.actuator.removeClass('open');
-				this.actuator.addClass('closed');
-				this.poolMorph.start({
-					"opacity": 0,
-					"height": 0
-				});				
-				if( this.filter ) this.filter.addClass('hidden');
-			}
-		}.bindWithEvent( this ) );
+				}else{
+					this.actuator.removeClass('open');
+					this.actuator.addClass('closed');
+					this.poolMorph.start({
+						"opacity": 0,
+						"height": 0
+					});				
+				}
+			}.bindWithEvent( this ) );
+		}
 		this.initControls();
 		this.initItems();
 
@@ -938,7 +935,6 @@ lattice.modules.LatticeAssociator = new Class({
 		classPath = el.getData('classpath');
 		if(!classPath){
 			newItem = new lattice.modules.AssociatorItem( el, this );
-			console.log( 'initItem', el, newItem );
 		} else {
 			ref = this.getClassFromClassPath( classPath, '.' );
 			if(ref){
