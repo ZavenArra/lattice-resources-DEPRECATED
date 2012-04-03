@@ -36,7 +36,7 @@ lattice.modules.Module = new Class({
 
 
   getUploaderSWFUrl : function(){
-      return "lattice/lattice/views/thirdparty/digitarald/fancyupload/Swiff.Uploader3.swf";
+      return "modules/lattice/views/thirdparty/digitarald/fancyupload/Swiff.Uploader3.swf";
   },
 	
 	getClearFieldURL: function(){
