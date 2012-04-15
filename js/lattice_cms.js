@@ -49,7 +49,13 @@ lattice.modules.CMS = new Class({
 	options: {},
 
 	/* Section: Getters & Setters */    
-    
+   
+	getMoveURL: function( newParentId ){
+		var url = lattice.util.getBaseURL() + "ajax/data/cms/move/" + this.getObjectId() + "/" + newParentId;		
+		console.log( "url", url );
+		return url;
+	},
+	
 	getRemoveObjectRequestURL: function( parentId ){
 		return lattice.util.getBaseURL() + "ajax/compound/cms/removeObject/" + parentId;
 	},
@@ -141,7 +147,7 @@ lattice.modules.CMS = new Class({
 				this.element.getElement( '.localizationControls' ), this, { 'clickCallback': this.onLanguageSelected.bind( this ) } );
 		}
 	},
-
+		
 	onLanguageSelected: function( item ){
 		var href, loc;
 		loc = item.getData('lang');
@@ -452,7 +458,7 @@ lattice.modules.CMSPage = new Class({
 		}
 		
 		this.initializeHideShowTabs();
-				
+		this.initMoveWidget();
 		this.element.unspin();
 	},
 
@@ -461,6 +467,31 @@ lattice.modules.CMSPage = new Class({
 		tabGroups.each( function( tabGroup ){
 			new lattice.ui.HideShowTabs( tabGroup );
 		});
+	},
+	
+	
+	initMoveWidget: function(){
+//		console.log( "initMoveWidget" );
+		var widget = this.element.getElement('.moveWidget');
+		if( widget ) widget.getElement( 'select' ).addEvent( "change", this.moveObject.bind( this, widget.getElement( 'select' ) ) );
+	},
+	
+	moveObject: function( selectBox ){	
+		var parentId = selectBox.getSelected()[0].get('value');
+//		console.log( parentId );
+		var url = this.marshal.getMoveURL( parentId );
+		return new Request.JSON( { url: url, onSuccess: this.onObjectMoved.bind( this ) } ).send();
+	},
+	
+	onObjectMoved: function( json ){
+//		console.log( "onObjectMoved", json );
+		if( json.returnValue == true ){
+			window.location.reload();
+		}else{
+			console.log( "Error:", json );
+			throw "There was an error moving the object";
+			alert("There was an error moving the object.");
+		}
 	},
 	
 	/*
