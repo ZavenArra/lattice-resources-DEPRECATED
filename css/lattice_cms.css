@@ -232,8 +232,13 @@ input, textarea{
 }
 
 .ui-Text textarea{
+	word-wrap: break-word;
 	display: block;
 	resize: none;
+}
+
+.ui-Text .ipe{
+	word-wrap: break-word;
 }
 
 .ui-Text[data-ismultiline=true] textarea{
@@ -368,6 +373,11 @@ ul.listing li{
 
 .associator>ul{
 	clear: both;
+}
+
+.moveWidget h5{
+	float: left;
+	margin: 0 1em 2em 0;
 }
 
 .associator ul.pool{
@@ -528,16 +538,39 @@ ul.listing li{
 	border: .5em #eee solid;
 }
 
-.file .wrapper,
-.cluster .wrapper,
-.ui-FileElement .wrapper,
-.ui-ImageFile .wrapper,
-.ui-File .wrapper{
-	margin:0 0 .5em 0;
-	padding: 0 0 .5em 0;
+.file,
+.cluster,
+.ui-FileElement,
+.ui-ImageFile,
+.ui-File{
+	margin:1em 0 .5em 0;
+	padding: .5em;
 	background: #efefef;
+	border-radius: 3px;
+	background:#f9f9f9;
+	border: 1px #dedede solid;
 }
 
+.cluster.link .ui-Text{
+	width: 160px;
+	float: left;
+	margin: .5em 1em 0 0;
+}
+
+.cluster.link .wrapper{
+	width: 650px;
+	padding: .25em;
+}
+
+.cluster.link .itemControls{
+	float: right;
+}
+
+.cluster.link h4{
+	float: left;
+	font-size: 1em;
+	margin: .5em 1em .5em .5em;
+}
 
 .ui-FileElement .fileName,
 .ui-ImageFile .fileName,
@@ -693,6 +726,10 @@ a.icon.cancel{ background-image: url( ../images/icon_cancel.png); }
 	color:#fff;	
 }
 
+
+.listcontrol.top{
+	margin-top: 1em;
+}
 /* -----------------------------------------------------------
 Labels
 ----------------------------------------------------------- */
