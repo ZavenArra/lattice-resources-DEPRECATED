@@ -854,7 +854,9 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 	
 	filterPoolByWord: function( e ){
+		
 		e.preventDefault();
+		this.poolList.spin();
 		var word = this.element.getElement( '.filter input' ).get("value");
 		var url = this.getFilterPoolByWordURL( this.getObjectId(), this.element.get('data-lattice'), word );
 		var jsonRequest = new Request.JSON({
@@ -865,7 +867,7 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 
 	onFilteredPoolReceived: function( json ){
-		console.log( "onFilteredPoolReceived", json );
+		this.poolList.unspin();
 		this.poolList.empty();
 		this.poolList.set( "html",  json.response.html );
 		this.initItems();
