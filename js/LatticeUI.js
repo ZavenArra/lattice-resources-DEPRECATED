@@ -94,7 +94,7 @@ lattice.ui.UIField = new Class({
 			this.validationSticky.setMessage( "<p>Error: " + errorMessage + "</p>" );
 		}
 		this.validationSticky.show();
-		lattice.log('showValidationError', this.validationSticky );
+		log('showValidationError', this.validationSticky );
 	},
 	
 	destroyValidationSticky: function(){
@@ -118,11 +118,16 @@ lattice.ui.UIField = new Class({
 		}		
 		if( this.showSaving ) this.showSaving();
 		if( this.leaveEditMode ) this.leaveEditMode();
-		this.marshal.saveField( { field: this.fieldName, value: val }, this.onResponse.bind( this ) );
+		
+		var controller = ( this.element.getData( 'controller' ) )? this.element.getData( 'controller' ) : 'controller';
+		var action = ( this.element.getData( 'action' ) )? this.element.getData( 'action' ) : 'savefield';
+		
+		console.log( 'submit', this.fieldName, controller, action );
+		this.marshal.saveField( { field: this.fieldName, value: val }, this.onResponse.bind( this ), controller, action );
 	},	
 
 	destroy: function(){
-//		lattice.log( ">>>> ", this.fieldName, "destroy!" );
+//		log( ">>>> ", this.fieldName, "destroy!" );
 		this.fieldName = null;	
 		this.parent();
 	}
@@ -273,7 +278,7 @@ lattice.ui.Sticky = new Class({
 lattice.ui.HideShowTabs = new Class({
 
 	initialize: function( el ){
-//		lattice.log( 'HideShowTabs', el );
+//		log( 'HideShowTabs', el );
 		this.element = el;
 		this.tabs = el.getElements( '.tabNav li');
 		this.tabs.each( function( tab ){
@@ -328,7 +333,7 @@ lattice.ui.navigation.Tabs = new Class({
 	},
 	
 	applyTabBehavior: function( aTab, anIndex ){
-//		lattice.log( this, "applyTabBehavior", aTab, anIndex );
+//		log( this, "applyTabBehavior", aTab, anIndex );
 		aTab.addEvent( "click", this.onTabClicked.bindWithEvent( this, aTab ) );
 		if( aTab.hasClass( "active" ) ){
 			// this.activeTab = aTab;
@@ -362,7 +367,7 @@ lattice.ui.navigation.BreadCrumbTrail = new Class({
 	initialize: function( anElement, onCrumbClickedCallback ){
 		this.element = anElement;
 		this.onCrumbClickedCallback = onCrumbClickedCallback;
-		// lattice.log( "BreadCrumbTrail", this, this.element );
+		// log( "BreadCrumbTrail", this, this.element );
 	},
 	
 	toString: function(){
@@ -390,7 +395,7 @@ lattice.ui.navigation.BreadCrumbTrail = new Class({
 	
 	onCrumbClicked: function( e, obj ){
 		lattice.util.stopEvent( e );
-//		lattice.log( "::::: \t onBreadCrumbClicked", obj );
+//		log( "::::: \t onBreadCrumbClicked", obj );
 		this.onCrumbClickedCallback( obj );
 	},
 	
@@ -403,7 +408,7 @@ lattice.ui.navigation.BreadCrumbTrail = new Class({
 	removeCrumbByLabel: function( label ){
 		this.getCrumbs().each( function( aCrumb ){
 			if( label == aCrumb.retrieve( 'data' ).label ){
-//				lattice.log('!', label, aCrumb.retrieve( 'data' ).label, aCrumb );
+//				log('!', label, aCrumb.retrieve( 'data' ).label, aCrumb );
 				aCrumb.destroy();
 			}
 		});			
@@ -426,7 +431,7 @@ lattice.ui.ModalManager = new Class({
 	initialize: function(){},
 	
 	addListener: function( aListener ){
-//		lattice.log( this.toString(), "addListener", aListener );
+//		log( this.toString(), "addListener", aListener );
 		this.parent( aListener );
 	},
 	
@@ -457,7 +462,7 @@ lattice.ui.ModalManager = new Class({
 	
 	getScroll: function(){
 		var returnVal =  ( this.activeModal )? this.activeModal.element.getScroll() : window.getScroll();
-//		lattice.log( this.toString(), "getScroll", returnVal );
+//		log( this.toString(), "getScroll", returnVal );
 		return returnVal;
 	},
 
@@ -527,7 +532,7 @@ lattice.ui.Sortable = new Class({
 		}
 	},
 	initialize: function( anElement, marshal, scrollerTarget ){
-//	    lattice.log( ":: lattice.ui.Sortable", anElement, marshal, scrollerTarget );
+//	    log( ":: lattice.ui.Sortable", anElement, marshal, scrollerTarget );
 		this.marshal = marshal;
 		this.element = anElement;
 		this.parent( anElement, this.options );
@@ -1312,7 +1317,7 @@ lattice.ui.FileElement = new Class({
 
 	clearFile: function( e ){
 		e.preventDefault();
-		// lattice.log( 'clearField' );
+		// log( 'clearField' );
 		if( this.previewElement ){
 			this.imageFadeOut = new Fx.Morph( this.imagePreview, {
 				'duration': 300,
@@ -1386,7 +1391,7 @@ lattice.ui.FileElement = new Class({
 	},
 
 	validate: function() {
-//		lattice.log( this.toString(), 'validate' );
+//		log( this.toString(), 'validate' );
 		var options = this.uploader.options;
 		if (options.fileListMax && this.uploader.fileList.length >= options.fileListMax) {
 			this.validationError = 'fileListMax';
@@ -1401,14 +1406,14 @@ lattice.ui.FileElement = new Class({
 	},
 
 	invalidate: function() {
-//		lattice.log( this.toString(), "invalidate" );
+//		log( this.toString(), "invalidate" );
 		this.invalid = true;
 		this.uploader.fireEvent( 'fileInvalid', this, 10 );
 		return this.fireEvent( 'invalid', this, 10 );
 	},
 
 	render: function() {
-//		lattice.log( this.toString(), 'render' );
+//		log( this.toString(), 'render' );
 		this.addEvents({
 			'start': this.onStart,
 			'progress': this.onProgress,
@@ -1420,21 +1425,21 @@ lattice.ui.FileElement = new Class({
 	},
 
 	showProgress: function( data ) {
-//		lattice.log( this.toString(), "onProgress", $A( arguments ) );
+//		log( this.toString(), "onProgress", $A( arguments ) );
 		this.progressBar.setStyle( "background-position", ( 100 - data.percentLoaded )+"% 0%" );
 		if( this.imagePreview ) this.imagePreview.setStyle( "opacity", ( 1 - data.percentLoaded * .01 ) );
 
 	},	
 	
 	showStatus: function(){
-//		lattice.log( this.toString(), "showStatus", $A( arguments ) );
+//		log( this.toString(), "showStatus", $A( arguments ) );
 		lattice.eventManager.broadcastMessage("resize");
  		this.statusShow.start( { "opacity": [0,1] } );
 		this.statusElement.removeClass("hidden");
 	},
 	
 	revertToReadyState: function(){
-//		lattice.log( this.toString(), "revertToReadyState" );
+//		log( this.toString(), "revertToReadyState" );
 		this.statusElement.addClass('hidden');
 //		this.statusHide.start( { "opacity":[1,0] });
 	},
@@ -1442,16 +1447,16 @@ lattice.ui.FileElement = new Class({
 	onFileComplete: function( json ){
 
 		json = JSON.decode( json.response.text );
-		lattice.log( "onFileComplete : json : ", json );
+		log( "onFileComplete : json : ", json );
 
 		this.clearButton.fade( "in" );
 		if( this.filename ) this.filename.set( "text",  json.response.filename );
 		this.clearButton.removeClass("hidden");
 		this.downloadButton.removeClass("hidden");
-		lattice.log( '\n\tthumbSrc:', lattice.util.getBaseURL() + json.response.thumbSrc, "\n\tsrc: ", json.response.src );
+		log( '\n\tthumbSrc:', lattice.util.getBaseURL() + json.response.thumbSrc, "\n\tsrc: ", json.response.src );
 		this.downloadButton.set( 'title', 'download ' + json.response.filename );
 		this.downloadButton.set( "href", lattice.util.getBaseURL() + json.response.src );
-//		lattice.log( this.toString(), "onFileComplete", lattice.util.getBaseURL() + json.response.thumbSrc );
+//		log( this.toString(), "onFileComplete", lattice.util.getBaseURL() + json.response.thumbSrc );
 		this.downloadButton.removeClass("hidden");
 		if( this.previewElement ){
 			this.imgAsset = new Asset.image( lattice.util.getBaseURL() + json.response.thumbSrc, {  alt: json.response.filename, onload: this.updateThumb.bind( this, json ) } );
@@ -1461,7 +1466,7 @@ lattice.ui.FileElement = new Class({
 	},
 	
 	updateThumb: function( imageData ){
-//		lattice.log( this.toString(), "updateThumb", imageData );
+//		log( this.toString(), "updateThumb", imageData );
 		var size = ( this.imagePreview )? this.imagePreview.getSize() : { x: 0, y: 0 };
 		this.imgAsset.setStyle( 'width', imageData.width );
 		this.imgAsset.setStyle( 'height', imageData.height );
@@ -1483,7 +1488,7 @@ lattice.ui.FileElement = new Class({
 	},
 
 	destroy: function(){
-//		lattice.log( "destroy\t", this.toString() );
+//		log( "destroy\t", this.toString() );
 		lattice.eventManager.removeListener( this );
 		this.uploader.destroy();
 		this.statusElement.destroy();
@@ -1584,7 +1589,7 @@ lattice.util.Uploader = new Class({
 	},
 
 	setFocus: function(){
-//		lattice.log("!!!!!!!!!!!!!!!!!!")
+//		log("!!!!!!!!!!!!!!!!!!")
 		this.box.getChildren()[0].focus();
 	},
 	
@@ -1619,7 +1624,7 @@ lattice.util.Uploader = new Class({
 
 	
 	findFile: function(id) {
-//		lattice.log( "findFile" );
+//		log( "findFile" );
 		for (var i = 0; i < this.fileList.length; i++) {
 			if ( this.fileList[i].id == id ) return this.fileList[i];
 		}
@@ -1652,13 +1657,13 @@ lattice.util.Uploader = new Class({
 	},
 
 	targetRelay: function(name) {
-//		lattice.log( "!!!! targetRelay", name );
+//		log( "!!!! targetRelay", name );
 		if ( this.currentFileElementInstance ) this.currentFileElementInstance.fireEvent( name );
 	},
 
 	setOptions: function( options ) {
 		if (options) {
-//			lattice.log( this.toString(), "setOptions", options );
+//			log( this.toString(), "setOptions", options );
 			if ( options.url) options.url = lattice.util.Uploader.qualifyPath( options.url );
 			if ( options.buttonImage) options.buttonImage = lattice.util.Uploader.qualifyPath( options.buttonImage );
 			this.parent( options );
@@ -1669,13 +1674,13 @@ lattice.util.Uploader = new Class({
 
 	onTargetHovered: function( target, targetElement, coords, options ){
 		if( this.currentFileElementInstance == target ) return;
-		lattice.log( "lattice.util.Uploader", target, targetElement, coords, options );
+		log( "lattice.util.Uploader", target, targetElement, coords, options );
 // 		this.setTarget( target, targetElement, coords, options );
 // //		targetElement.addClass('active');
 	},
 
 	setEnabled: function(status) {
-//		lattice.log( "setEnabled" );
+//		log( "setEnabled" );
 		this.remote('setEnabled', status);
 	},
 
@@ -1687,20 +1692,20 @@ lattice.util.Uploader = new Class({
 
 	stop: function() {
 		this.status = "rest";
-//		lattice.log( "stop" );
+//		log( "stop" );
 		this.fireEvent('beforeStop');
 		this.remote('stop');
 	},
 
 	remove: function() {
-//		lattice.log( "remove" );
+//		log( "remove" );
 		this.fireEvent('beforeRemove');
 		this.remote('remove');
 	},
 
 	update: function( data ) {
 		// the data is saved right to the instance
-//		lattice.log( "lattice.util.Uploader", "update", data );
+//		log( "lattice.util.Uploader", "update", data );
 		if( data ) this.currentFileElementInstance.showProgress( data );
 		Object.append( this,  data );
 		this.fireEvent('queue', [this], 10);
@@ -1708,47 +1713,47 @@ lattice.util.Uploader = new Class({
 	},
 
 	beforeStart: function(){
-//		lattice.log( this.toString(), "beforeStart", $A( arguments ) );
+//		log( this.toString(), "beforeStart", $A( arguments ) );
 		this.currentFileElementInstance.showStatus();
 //		this.reposition();
 	},
 	
 	fileStart: function(file) {
-//		lattice.log( "fileStart" );
+//		log( "fileStart" );
 		this.fireEvent("fileStart");
 		this.remote('fileStart', file.id);
 	},
 	
 	fileStop: function(file) {
-//		lattice.log( "fileStop" );
+//		log( "fileStop" );
 		this.remote('fileStop', file.id);
 	},
 
 	fileRemove: function(file) {
-//		lattice.log( "fileRemove" );
+//		log( "fileRemove" );
 		this.remote('fileRemove', file.id);
 	},
 
 	fileRequeue: function(file) {
-//		lattice.log( "fileRequeue" );
+//		log( "fileRequeue" );
 		this.remote('fileRequeue', file.id);
 	},
 
 	fileComplete: function( data ){
 		this.status = "rest";
-//		lattice.log( this.toString(), "onFileComplete", $A( arguments ) );
+//		log( this.toString(), "onFileComplete", $A( arguments ) );
 		// fixes weird behavior of everything going well but thumb not updating if upload happens too fast.
 		this.currentFileElementInstance.onFileComplete.delay( 90, this.currentFileElementInstance, data );
 	},
 	
 	complete: function(){
-//		lattice.log( this.toString(), "complete" );
+//		log( this.toString(), "complete" );
 //		this.currentFileElementInstance.onComplete( data );
 	},
 	
 	onComplete: function(){
 		this.status = "rest";
-//		lattice.log( this.toString(), "onComplete" );
+//		log( this.toString(), "onComplete" );
 		this.currentFileElementInstance.onComplete();
 	},
 	
@@ -1770,12 +1775,12 @@ lattice.util.Uploader = new Class({
 
 	processFiles: function( successraw, failraw, queue ) {
 
-//		lattice.log( this.toString(), "processFiles", $A( arguments ) );
+//		log( this.toString(), "processFiles", $A( arguments ) );
 
 		var fail = [], success = [];
 
 		if( successraw ){
-//			lattice.log( this.toString(), "processFiles", "success", success );
+//			log( this.toString(), "processFiles", "success", success );
 			successraw.each( function( data ) {
 				this.size += data.size;
 				this.fileList.push( this.currentFileElementInstance );
@@ -1788,7 +1793,7 @@ lattice.util.Uploader = new Class({
 		}
 
 		if (failraw || fail.length){
-//			lattice.log( this.toString(), "!!! FAILED !!!", failraw, fail );
+//			log( this.toString(), "!!! FAILED !!!", failraw, fail );
 			//this.currentFileElementInstance.invalidate().render();
 			switch( failraw.validationError ){
 				case "sizeLimitMax":
@@ -1799,12 +1804,12 @@ lattice.util.Uploader = new Class({
 		}
 
 		this.update(queue);
-//		lattice.log( this.toString(), "processFiles", this.options.instantStart, success.length, success)
+//		log( this.toString(), "processFiles", this.options.instantStart, success.length, success)
 		if (this.options.instantStart && success.length) this.start();
 	},
 
 	setTarget: function( uiElement, targetElement, options ){
-//		lattice.log( "lattice.util.Uploader.setTarget", uiElement, targetElement, coords, options );
+//		log( "lattice.util.Uploader.setTarget", uiElement, targetElement, coords, options );
 		this.currentFileElementInstance = uiElement;
 		this.target = targetElement;
 		this.setOptions( options );
@@ -1829,11 +1834,11 @@ lattice.util.Uploader = new Class({
 	},
 
 	render: function() {
-		lattice.log( this.toString(), "render", this.invalid, $A( arguments ) );
+		log( this.toString(), "render", this.invalid, $A( arguments ) );
 	},
 	
 	destroy: function(){
-//		lattice.log( "UPLOADER DESTROY ", this.currentFileElementInstance );
+//		log( "UPLOADER DESTROY ", this.currentFileElementInstance );
 		this.removeEvents();
 		this.box.destroy();
 
@@ -1898,7 +1903,7 @@ lattice.util.Uploader = new Class({
 
 lattice.util.Uploader.qualifyPath = ( function() {
 	var anchor;
-//	lattice.log("lattice.util.Uploader.qualifyPath ")
+//	log("lattice.util.Uploader.qualifyPath ")
 	return function( path ) {
 		( anchor || ( anchor = new Element('a') ) ).href = path;
 		return anchor.href;
@@ -1961,7 +1966,7 @@ lattice.ui.Pulldown = new Class({
 	},
 	
 	getKeyValuePair: function(){
-//		lattice.log( "getKeyValuePair ", this.element );
+//		log( "getKeyValuePair ", this.element );
 		var returnVal = {};
 		returnVal[ this.fieldName ] = this.getValue();
 		return returnVal;
@@ -1969,7 +1974,7 @@ lattice.ui.Pulldown = new Class({
 	
 	onResponse: function( json ){
 		this.parent( json );
-//		lattice.log( "Pulldown.onResponse,", $A(arguments) );
+//		log( "Pulldown.onResponse,", $A(arguments) );
 	},
 	
 	destroy: function(){
@@ -2037,7 +2042,7 @@ lattice.ui.RadioGroup = new Class({
 	radios: null,
 
 	getValue: function(){
-//	lattice.log( this, "getValue", this.radios, this.radios.length );
+//	log( this, "getValue", this.radios, this.radios.length );
 		for( var i = 0; i < this.radios.length; i++ ){
 			if( this.radios[i].get( "checked" ) ) return this.radios[i].get( "value" );
 		}
@@ -2048,13 +2053,13 @@ lattice.ui.RadioGroup = new Class({
 		if( aValue == null ) aValue = "";
 		for( var i = 0; i < this.radios.length; i++ ){
 			var aRadio = this.radios[i];
-//			lattice.log( aRadio.get( "value" ), ( aRadio.get( "value" ) == aValue ), ( aRadio.get( "value" ) == "" ) );
+//			log( aRadio.get( "value" ), ( aRadio.get( "value" ) == aValue ), ( aRadio.get( "value" ) == "" ) );
 			if( aRadio.get( "value" ) == aValue ) aRadio.setProperty( "checked", "checked" );
 		}
 	},
 
 	getKeyValuePair: function(){
-//		lattice.log( "getKeyValuePair ", this.element );
+//		log( "getKeyValuePair ", this.element );
 		var returnVal = {};
 		returnVal[ this.fieldName ] = this.getValue();
 		return returnVal;
@@ -2094,7 +2099,7 @@ lattice.ui.RadioGroup = new Class({
 	
 	onResponse: function( json ){
 		this.parent( json );
-//		lattice.log( "RadioGroup onResponse,", $A(arguments) );
+//		log( "RadioGroup onResponse,", $A(arguments) );
 	},
 	
 	destroy: function(){
@@ -2148,7 +2153,7 @@ lattice.ui.Input = new Class({
 	},
 
 	checkFormaxLength: function( e ){
-//		lattice.log(this.maxLength, e.target.get("value").length);
+//		log(this.maxLength, e.target.get("value").length);
 		if( e.target.get("value").length >= this.maxLength && e.key != "shift" && e.key != "enter" && e.key != "return" && e.key != "tab" && e.keycode != 46 && e.keycode != 8 ){
 			lattice.util.stopEvent( e );
 			alert( "The maximum length this field allows is " + this.maxLength + " characters");
@@ -2218,7 +2223,7 @@ lattice.ui.Text = new Class({
 		this.mode = "atRest";
 		if( this.submitOnBlur ) this.allowSubmitOnBlur = true;
 		this.field = anElement.getElement( ".og" );
-//		lattice.log( this.field.get( 'html' ) );
+//		log( this.field.get( 'html' ) );
 		// if( this.validate ){
 		// 	//do validation (refactor to use mootools validation )
 		// }
@@ -2245,12 +2250,12 @@ lattice.ui.Text = new Class({
 	},
 
 	onDocumentClicked: function( e ){
-		lattice.log('onDocumentClicked', e.target );
+		log('onDocumentClicked', e.target );
 		if( this.mode != "editing" ) return;
 	  if( e.target == this.saveButton || e.target == this.cancelButton ) return;
 	  if( e.target == this.element || this.element.contains( e.target ) ) return;
 		lattice.util.stopEvent( e );
-//		lattice.log( this.fieldName, 'onDocumentClicked', e.target );//this.mode, this.element, this.element.contains( e.target ) );
+//		log( this.fieldName, 'onDocumentClicked', e.target );//this.mode, this.element, this.element.contains( e.target ) );
 	},
 
 	toString: function(){ return "[ object, lattice.ui.Text ]"; },
@@ -2266,19 +2271,19 @@ lattice.ui.Text = new Class({
 	},
 	
 	onFieldFocus: function( e ){
-		// lattice.log('onFieldFocus');
+		// log('onFieldFocus');
 		lattice.util.stopEvent( e );
 		if( this.mode == "editing ") return false;
 		this.enterEditMode( e );
 	},
 	
 	onFieldBlur: function( e ){
-		// lattice.log('onBlur');
+		// log('onBlur');
 		if( this.allowSubmitOnBlur && !this.validationSticky ) this.submit();
 	},
 	
 	prepareField: function(){
-//		lattice.log( 'prepareField' );
+//		log( 'prepareField' );
 		var val, size, h, w, inputType;
 		this.field.removeEvents();
 		val = this.ipeElement.get( 'html' ).formatForStorage();
@@ -2362,7 +2367,7 @@ lattice.ui.Text = new Class({
 	},
 	
 	submit: function( e ){
-//		lattice.log( 'submit' );
+//		log( 'submit' );
 		this.parent( e );
 		var val = ( this.field.get( 'type' ) == 'password' )?  this.submittedValue.replace( /./g, '*' ) : this.submittedValue.formatForDisplay();
 		this.ipeElement.set( 'text', val );
@@ -2376,7 +2381,7 @@ lattice.ui.Text = new Class({
 	},
 
 	enableElement: function( e ){
-//		lattice.log( 'enableElement' );
+//		log( 'enableElement' );
 		this.parent( e );
 		this.ipeElement.removeEvents();
 		this.field.addEvent( 'focus' , this.boundOnFieldFocus );
@@ -2385,13 +2390,13 @@ lattice.ui.Text = new Class({
 	},
 	
 	disableElement: function( e ){
-//		lattice.log( 'disableElement' );
+//		log( 'disableElement' );
 		this.parent( e );
 		this.ipeElement.removeEvents();
 	},
 	
 	enterEditMode: function( e ){
-//		lattice.log("enterEditMode");
+//		log("enterEditMode");
 		lattice.util.stopEvent( e );
 		if( this.mode == "editing ") return false;
 		this.mode = "editing";
@@ -2401,7 +2406,7 @@ lattice.ui.Text = new Class({
 	},
 	
 	leaveEditMode: function(){
-//		lattice.log('leaveEditMode');
+//		log('leaveEditMode');
 
 		document.removeEvent( "mousedown", this.documentBoundUpdateAndClose );
 
@@ -2422,7 +2427,7 @@ lattice.ui.Text = new Class({
 	},
 
 	cancelEditing: function( e ){
-//		lattice.log('cancelEditing');
+//		log('cancelEditing');
 		e.preventDefault();
 		if( this.oldValue ){
 			var val = this.oldValue.formatForDisplay()
@@ -2434,11 +2439,11 @@ lattice.ui.Text = new Class({
 		this.ipeElement.morph( '.atRest' );
 		this.leaveEditMode();
 		this.destroyValidationSticky();
-		// lattice.log( 'validationSticky', this.validationSticky );
+		// log( 'validationSticky', this.validationSticky );
 	},
 
 	showSaving: function(){
-//		lattice.log('showSaving');
+//		log('showSaving');
 		this.mode = 'saving';
 		this.ipeElement.addClass( 'saving' );
 		this.ipeElement.setStyle( 'opacity', .2 );
@@ -2564,7 +2569,7 @@ lattice.ui.MooSwitch = new Class({
 		
 		//Hide Radioboxes and Labels//
 		this.radio_el = this.element.getElements('input[type="radio"]');
-//		lattice.log( ":::: ", this.radio_el );
+//		log( ":::: ", this.radio_el );
 		this.container.inject( this.radio_el[ this.radio_el.length - 1 ], 'after');
 		
 		if(this.label_bg == 'light') this.labels.addClass('light_bg');
@@ -2734,7 +2739,7 @@ lattice.ui.PaginationControls = new Class({
 		this.element.store( "Class" );
 		this.marshal = ( aMarshal )? aMarshal : $( this.element.get("id").subString( 0, this.element.get("id").indexOf("_pagination") ) );
 		this.container = ( this.marshal.element.getElement( ".container" ) )? this.marshal.element.getElement( ".container" ) : this.marshal.element;
-//		lattice.log( this.toString(), "initialize", anElement, this.marshal );
+//		log( this.toString(), "initialize", anElement, this.marshal );
 		this.build();
 	},
 	
@@ -2763,7 +2768,7 @@ lattice.ui.PaginationControls = new Class({
 	
 	nextPage: function( e ){
 		lattice.util.stopEvent( e );
-//		lattice.log( this.toString(), "nextPage", e );
+//		log( this.toString(), "nextPage", e );
 		this.currentPage ++;
 		if( this.currentPage == this.options.totalPages ) this.nextPageControl.addClass( "hidden" );
 		this.previousPageControl.removeClass("hidden");
@@ -2786,7 +2791,7 @@ lattice.ui.PaginationControls = new Class({
 			this.clearElements( this.getPageableItems() ); 
 			this.container.adopt( newChildren );
 			//this.container.adopt( this.pages[ this.currentPage ] );
-//			lattice.log( "Page Cached... send JSON", this.toString(), "paginate", "this.pages[ this.currentPage ]", this.pages[ this.currentPage ] );
+//			log( "Page Cached... send JSON", this.toString(), "paginate", "this.pages[ this.currentPage ]", this.pages[ this.currentPage ] );
 			if( this.marshal && this.marshal.initList ) this.marshal.initList();
 		}else{
 			this.spinner.removeClass( "hidden" );
@@ -2810,24 +2815,24 @@ lattice.ui.PaginationControls = new Class({
 		var newChildren = this.buildItems( json );
 		this.clearElements( contents );
 		this.pages[ this.currentPage ] = json;
-//		lattice.log( "\n\t", this.toString(), "onPagination", newChildren, this.pages[ this.currentPage ] );
+//		log( "\n\t", this.toString(), "onPagination", newChildren, this.pages[ this.currentPage ] );
 		this.container.adopt( newChildren );
 		if( this.marshal && this.marshal.initList ){ this.marshal.initList(); }
 	},
 	
 	buildItems: function( json ){
-//		lattice.log( this.toString(), "buildItems", json );
+//		log( this.toString(), "buildItems", json );
 		json = JSON.decode( json );
 		var newItems = [];
 		json.each( function( aNode, anIndex ){
-//			lattice.log("anIndex", anIndex );
+//			log("anIndex", anIndex );
 			newItems.push( this.buildItem( aNode, anIndex ) );
 		}, this );
 		return newItems;
 	},
 	
 	buildItem: function( json, anIndex ){
-//		lattice.log( this.toString(), "buildItem", anIndex, this.marshal, json );
+//		log( this.toString(), "buildItem", anIndex, this.marshal, json );
 		var clone = this.getPaginationItemElement().clone();//true );
 		if( this.getPaginationItemElement().get( "id" ) ) clone.set( "id", this.itemIdPrefix + "_" + json.id );
 		
@@ -2892,7 +2897,7 @@ lattice.ui.Tags = new Class({
 	
 	enterEditMode: function( e ){
 
-		if( e && e.target ) lattice.log( 'enterEditMode', e.target );
+		if( e && e.target ) log( 'enterEditMode', e.target );
 
 		lattice.util.preventDefault( e );
 
