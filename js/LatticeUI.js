@@ -83,7 +83,7 @@ lattice.ui.UIField = new Class({
 //		this.field.fireEvent( 'focus' );
 		
 		if( !this.validationSticky ){
-			this.validationSticky = new lattice.ui.FieldSticky( this.element, {
+			this.validationSticky = new lattice.ui.FieldSticky( this.element.getElement('label'), {
 				content: "<p>Error: " + errorMessage + "</p>",
 				position: 'centerTop',
 				edge: 'centerBottom',
