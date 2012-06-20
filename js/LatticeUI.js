@@ -94,7 +94,7 @@ lattice.ui.UIField = new Class({
 			this.validationSticky.setMessage( "<p>Error: " + errorMessage + "</p>" );
 		}
 		this.validationSticky.show();
-		log('showValidationError', this.validationSticky );
+		console.log('showValidationError', this.validationSticky );
 	},
 	
 	destroyValidationSticky: function(){
@@ -2011,8 +2011,13 @@ lattice.ui.CheckBox = new Class({
 		}
 		if( this.showSaving ) this.showSaving();
 		if( this.leaveEditMode ) this.leaveEditMode();
-		this.marshal.saveField( { field: this.fieldName, value: val }, this.onResponse.bind( this ) );
+		var controller = ( this.element.getData( 'controller' ) )? this.element.getData( 'controller' ) : 'controller';
+		var action = ( this.element.getData( 'action' ) )? this.element.getData( 'action' ) : 'savefield';
+
+		console.log( 'submit', this.fieldName, controller, action );
+		this.marshal.saveField( { field: this.fieldName, value: val }, this.onResponse.bind( this ), controller, action );
 	},
+	
 	
 	setValue: function( aVal ){
 		if( aVal == 1 ){
