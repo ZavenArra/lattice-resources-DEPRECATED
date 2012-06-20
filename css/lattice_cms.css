@@ -383,7 +383,7 @@ ul.listing li{
 .associator ul.pool{
 	padding-top: .5em;
 	min-height: 5em;
-	max-height: 32em;
+	max-height: 88em;
 	overflow: auto;
 	background:#eee;
 }
