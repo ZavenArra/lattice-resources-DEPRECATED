@@ -831,8 +831,8 @@ lattice.modules.LatticeAssociator = new Class({
 		throw "Abstract function getDissociateURL must be overriden in" + this.toString();
 	},
 
-	getFilterPoolByWordURL: function(){
-		throw "Abstract function getFilterPoolByWordURL must be overriden in" + this.toString();
+	getFilterPoolByWordsURL: function(){
+		throw "Abstract function getFilterPoolByWordsURL must be overriden in" + this.toString();
 	},
 	
 	getSubmitSortOrderURL: function(){ 
@@ -853,10 +853,10 @@ lattice.modules.LatticeAssociator = new Class({
 		this.allowChildSort = ( this.element.get('data-allowchildsort') == 'true' )? true : false;
 	},
 	
-	filterPoolByWord: function( e ){
+	filterPoolByWords: function( e ){
 		e.preventDefault();
 		var word = this.element.getElement( '.filter input' ).get("value");
-		var url = this.getFilterPoolByWordURL( this.getObjectId(), this.element.get('data-lattice'), word );
+		var url = this.getFilterPoolByWordsURL( this.getObjectId(), this.element.get('data-lattice'), word );
 		var jsonRequest = new Request.JSON({
 			url: url,
 			onSuccess: function( json ){ this.onFilteredPoolReceived(json); }.bind( this )
@@ -872,21 +872,29 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 	
 	build: function(){
+
 		this.parent();
+
 		this.actuator = this.element.getElement('.actuator a.actuatorButton');
 		this.associated = this.element.getElement( 'ul.associated' );
 		this.poolContainer = this.element.getElement('.poolcontainer');
 		this.poolList = this.element.getElement( 'ul.pool' );
 		this.filter = this.element.getElement( '.filter' );
+
 		this.element.getElements( '.shadow' ).each( function( el ){
 			el.addBoxShadow( "1px 1px 2px #aaa");
 		});
+
 		this.poolMorph = new Fx.Morph( this.poolList, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
 
 		if( this.actuator ){
+
 			this.actuator.addEvent( 'click', function(e){
+
 				e.stop();
+
 				this.poolMorph.cancel();
+
 				if( this.actuator.hasClass('closed')){
 						this.actuator.removeClass('closed');
 						this.actuator.addClass('open');
@@ -910,13 +918,22 @@ lattice.modules.LatticeAssociator = new Class({
 						"height": 0
 					});				
 				}
+
 			}.bindWithEvent( this ) );
+		
+			if( this.actuator.getElement( '.paginator' ) ){
+				this.actuator.getElement( '.paginator' ).getElements('li a').each( function( anItem ){
+					console.log( ">>> ", anItem.get('href') );
+				}, this );
+			}
+
 		}
+		
 		this.initControls();
 		this.initItems();
 
 		this.filterSubmitButton = this.element.getElement(".filterButton");
-		if( this.filterButton )	this.filterSubmitButton.addEvent('click', this.filterPoolByWord.bindWithEvent( this ) );
+		if( this.filterButton )	this.filterSubmitButton.addEvent('click', this.filterPoolByWords.bindWithEvent( this ) );
 
 		this.makeSortable( this.associated );
 

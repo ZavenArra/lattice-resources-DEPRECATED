@@ -24,14 +24,12 @@ lattice.modules.Associator = new Class({
 	
 	getSubmitSortOrderURL: function( itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + "ajax/data/cms/saveSortOrder/" + itemid + "/" + latticeid;
-		log( '\t\getSubmitSortOrderURL', url );
+//		console.log( '\t\getSubmitSortOrderURL', url );
 		return url;
 	},
 	
-	getFilterPoolByWordURL: function( pid, latticeid, word ){
-		log( lattice, lattice.util );
+	getFilterPoolByWordsURL: function( pid, latticeid, word ){
 		var url = lattice.util.getBaseURL() + "ajax/html/associator/filterPoolByWord/" + pid + "/" + latticeid + "/" + word;
-		log( '\t\getFilterPoolByWordURL', url );
 		return url;
 	},
 	

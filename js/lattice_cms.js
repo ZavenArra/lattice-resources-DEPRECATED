@@ -332,7 +332,7 @@ lattice.modules.CMS = new Class({
 	},
 
 	saveTierSortRequest: function( newOrder, objectId ){
-		log( 'lattice.cms.saveTierSortRequest', 'order', newOrder,  'objectId', objectId );
+		//console.log( 'lattice.cms.saveTierSortRequest', 'order', newOrder,  'objectId', objectId );
 		return new Request.JSON( { url: this.getSubmitSortOrderURL(objectId) } ).post( { sortOrder: newOrder });
 	},
 
