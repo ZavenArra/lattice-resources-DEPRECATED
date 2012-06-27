@@ -875,7 +875,7 @@ lattice.modules.LatticeAssociator = new Class({
 
 		this.parent();
 
-		this.actuator = this.element.getElement('.actuator a.actuatorButton');
+		this.actuator = this.element.getElement('.actuator');
 		this.associated = this.element.getElement( 'ul.associated' );
 		this.poolContainer = this.element.getElement('.poolcontainer');
 		this.poolList = this.element.getElement( 'ul.pool' );
@@ -889,41 +889,14 @@ lattice.modules.LatticeAssociator = new Class({
 
 		if( this.actuator ){
 
-			this.actuator.addEvent( 'click', function(e){
-
-				e.stop();
-
-				this.poolMorph.cancel();
-
-				if( this.actuator.hasClass('closed')){
-						this.actuator.removeClass('closed');
-						this.actuator.addClass('open');
-						this.poolList.setStyles({
-							"opacity": 0,
-							"height": 0,
-							"display": "block"
-						});
-						// this.poolList.removeClass('hidden');
-						this.poolMorph.start({
-							"opacity": 1,
-							"height": "auto",
-							"display": "block"				
-						});
-						this.filter.removeClass('hidden');
-				}else{
-					this.actuator.removeClass('open');
-					this.actuator.addClass('closed');
-					this.poolMorph.start({
-						"opacity": 0,
-						"height": 0
-					});				
-				}
-
-			}.bindWithEvent( this ) );
-		
-			if( this.actuator.getElement( '.paginator' ) ){
-				this.actuator.getElement( '.paginator' ).getElements('li a').each( function( anItem ){
+			this.paginator = this.actuator.getElement( '.paginator' );
+			console.log( ">>>>", this.actuator, " : ", this.paginator );
+			if( this.paginator ){
+				console.log( ">>>> paginator????" );
+				this.paginator.getElements('li a').each( function( anItem ){
 					console.log( ">>> ", anItem.get('href') );
+					if( anItem.hasClass('active') ) this.activePage = anItem;
+					anItem.addEvent( 'click', this.onPageNavClicked.bindWithEvent( this, anItem ) );
 				}, this );
 			}
 
@@ -937,7 +910,25 @@ lattice.modules.LatticeAssociator = new Class({
 
 		this.makeSortable( this.associated );
 
-	},	
+	},
+	
+	onPageNavClicked: function( e, navItem ){
+		e.preventDefault();
+		this.activePage.removeClass('active');
+		this.activePage = navItem;
+		navItem.addClass('active');
+		return new Request.JSON( { 
+			url: navItem.get('href'),
+			onSuccess: this.onGetPageResponse.bind( this )
+			// 	console.log( ">>> ", json );
+ 			} ).send();
+	},
+	
+	onGetPageResponse: function( json ){
+		console.log( "onGetPageResponse", json );
+		this.poolList.empty();
+		this.poolList.set( "html",  json.response.html );
+	},
 	
 	initItems: function(){
     var items = this.element.getElements( "ul.associated li" ).combine( this.element.getElements( "ul.pool li" ) );

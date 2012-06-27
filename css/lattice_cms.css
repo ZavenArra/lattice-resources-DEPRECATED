@@ -236,8 +236,12 @@ input, textarea{
 	resize: none;
 }
 
+.ui-Text[data-ismultiline=true].ipe.p{
+	word-wrap: break-word;	
+}
 .ui-Text[data-ismultiline=true] textarea{
 	min-height: 7.5em;
+	word-wrap: break-word;
 }
 
 .displayField{
@@ -337,6 +341,30 @@ ul.listing li{
 	border-bottom: 1px #dedede solid;
 }
 
+.associator .paginator li{
+	margin: 0 .25em 0 0;
+	font-size: .75em;
+	color:#aaa;
+}
+
+.associator .paginator li a{
+	text-decoration: none;
+	border-radius: 3px;
+	padding: .125em .5em .125em .5em;
+}
+
+.associator .paginator li a.active,
+.associator .paginator li a:hover{
+	color: #fff;
+}
+
+.associator .paginator li a.active{
+	background: #0af;
+}
+
+.associator .paginator li a:hover{
+	background: #aaa;
+}
 
 /*.controls{ margin-bottom: 1em; }
 */
@@ -405,6 +433,7 @@ ul.listing li{
 
 .associator .actuator h4{
 	font-size: 1em;
+	line-height: 2;
 }
 .associator .actuator .actuatorButton,
 .associator ul li{
