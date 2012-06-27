@@ -296,10 +296,6 @@ Request.JSON.implement({
 */
 if( !lattice ) var lattice = {};
 
-lattice.log = function(){
-	if( lattice.debug ) console.log( arguments );
-}
-
 
 /*
 	Pakcage: lattice.util
