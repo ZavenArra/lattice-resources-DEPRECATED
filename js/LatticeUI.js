@@ -1156,7 +1156,8 @@ lattice.ui.DateRange = new Class({
 		
 	options: {
 		allowEmpty: false,
-		startView: 'month'
+		startView: 'month',
+		autoSubmit: false
 	},
 	
 	initialize: function( anElement, aMarshal ){
@@ -1177,7 +1178,7 @@ lattice.ui.DateRange = new Class({
 	
 	onSelect: function( e ){
 		lattice.util.stopEvent( e );
-		this.submit();
+		if( this.options.autoSubmit ) this.submit();
 		this.element.getElement(".spinner").removeClass("hidden");
 		if( this.options.onSelectCallback ) this.options.onSelectCallback();
 	},
