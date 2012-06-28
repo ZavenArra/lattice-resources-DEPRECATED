@@ -79,11 +79,8 @@ lattice.modules.Module = new Class({
 	Function build: Instantiates lattice.ui elements by calling initUI, can be extended for other purposes...
 	*/ 	
 	build: function(){
-//		log( "lattice.modules.Module.build!", this.element );
 		this.UIFields = this.initUI();
-//		log( ">>> ", this.UIFields );
 		this.childModules = this.initModules( this.element );
-//		log( ">>> ", this.childModules );
 	},
 	
 	toElement: function(){
@@ -853,7 +850,7 @@ lattice.modules.LatticeAssociator = new Class({
 		this.allowChildSort = ( this.element.get('data-allowchildsort') == 'true' )? true : false;
 	},
 	
-	filterPoolByWords: function( e ){
+	filterPoolByWord: function( e ){
 		e.preventDefault();
 		this.poolList.spin();
 		var word = this.element.getElement( '.filter input' ).get("value");
@@ -891,11 +888,8 @@ lattice.modules.LatticeAssociator = new Class({
 		if( this.actuator ){
 
 			this.paginator = this.actuator.getElement( '.paginator' );
-			console.log( ">>>>", this.actuator, " : ", this.paginator );
 			if( this.paginator ){
-				console.log( ">>>> paginator????" );
 				this.paginator.getElements('li a').each( function( anItem ){
-					console.log( ">>> ", anItem.get('href') );
 					if( anItem.hasClass('active') ) this.activePage = anItem;
 					anItem.addEvent( 'click', this.onPageNavClicked.bindWithEvent( this, anItem ) );
 				}, this );
@@ -921,7 +915,6 @@ lattice.modules.LatticeAssociator = new Class({
 		return new Request.JSON( { 
 			url: navItem.get('href'),
 			onSuccess: this.onGetPageResponse.bind( this )
-			// 	console.log( ">>> ", json );
  			} ).send();
 	},
 	
