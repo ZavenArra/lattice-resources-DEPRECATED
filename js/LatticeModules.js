@@ -902,7 +902,6 @@ lattice.modules.LatticeAssociator = new Class({
 
 		this.filterSubmitButton = this.element.getElement(".filterButton");
 		if( this.filterButton )	this.filterSubmitButton.addEvent('click', this.filterPoolByWords.bindWithEvent( this ) );
-
 		this.makeSortable( this.associated );
 
 	},
