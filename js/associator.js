@@ -6,32 +6,30 @@ lattice.modules.Associator = new Class({
 
 	getSaveFieldURL: function( itemObjectId ){
 	  var url = lattice.util.getBaseURL() +"ajax/data/associator/savefield/" + itemObjectId;
-//		lattice.log( '\t\getSaveFieldURL', url );
+//		log( '\t\getSaveFieldURL', url );
 		return url;
 	},
 	
 	getAssociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
-//		lattice.log( '\t\getAssociateURL', id );
+//		log( '\t\getAssociateURL', id );
 		return url;
 	},
 	
 	getDissociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/dissociate/' + id + "/" + itemid + "/" + latticeid;
-//		lattice.log( '\t\getDissociateURL', url );
+//		log( '\t\getDissociateURL', url );
 		return url;
 	},
 	
 	getSubmitSortOrderURL: function( itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + "ajax/data/cms/saveSortOrder/" + itemid + "/" + latticeid;
-		lattice.log( '\t\getSubmitSortOrderURL', url );
+//		console.log( '\t\getSubmitSortOrderURL', url );
 		return url;
 	},
 	
-	getFilterPoolByWordURL: function( pid, latticeid, word ){
-		lattice.log( lattice, lattice.util );
+	getFilterPoolByWordsURL: function( pid, latticeid, word ){
 		var url = lattice.util.getBaseURL() + "ajax/html/associator/filterPoolByWord/" + pid + "/" + latticeid + "/" + word;
-		lattice.log( '\t\getFilterPoolByWordURL', url );
 		return url;
 	},
 	
@@ -52,14 +50,14 @@ lattice.modules.RadioAssociator = new Class({
 	/* Section: Getters & Setters */	
 	getAssociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
-//		lattice.log( 'getAssociateURL', id, itemid, latticeid  );
-//		lattice.log( url );
+//		log( 'getAssociateURL', id, itemid, latticeid  );
+//		log( url );
 		return url;
 	},
 	
 	getDissociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/dissociate/' + id + "/" + itemid + "/" + latticeid;
-//		lattice.log( '\t\getDissociateURL', url );
+//		log( '\t\getDissociateURL', url );
 		return url;
 	},
 	
@@ -80,14 +78,14 @@ lattice.modules.CheckboxAssociator = new Class({
 
 	getAssociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
-//	lattice.log( 'getAssociateURL', id, itemid, latticeid  );
-//	lattice.log( url );
+//	log( 'getAssociateURL', id, itemid, latticeid  );
+//	log( url );
 		return url;
 	},
 	
 	getDissociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/dissociate/' + id + "/" + itemid + "/" + latticeid;
-//	lattice.log( '\t\getDissociateURL', url );
+//	log( '\t\getDissociateURL', url );
 		return url;
 	},
 	
