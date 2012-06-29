@@ -127,7 +127,7 @@ lattice.ui.UIField = new Class({
 	},	
 
 	destroy: function(){
-//		log( ">>>> ", this.fieldName, "destroy!" );
+//		console.log( ">>>> ", this.fieldName, "destroy!" );
 		this.fieldName = null;	
 		this.parent();
 	}
@@ -278,7 +278,7 @@ lattice.ui.Sticky = new Class({
 lattice.ui.HideShowTabs = new Class({
 
 	initialize: function( el ){
-//		log( 'HideShowTabs', el );
+//		console.log( 'HideShowTabs', el );
 		this.element = el;
 		this.tabs = el.getElements( '.tabNav li');
 		this.tabs.each( function( tab ){
@@ -333,7 +333,7 @@ lattice.ui.navigation.Tabs = new Class({
 	},
 	
 	applyTabBehavior: function( aTab, anIndex ){
-//		log( this, "applyTabBehavior", aTab, anIndex );
+//		console.log( this, "applyTabBehavior", aTab, anIndex );
 		aTab.addEvent( "click", this.onTabClicked.bindWithEvent( this, aTab ) );
 		if( aTab.hasClass( "active" ) ){
 			// this.activeTab = aTab;
@@ -367,7 +367,7 @@ lattice.ui.navigation.BreadCrumbTrail = new Class({
 	initialize: function( anElement, onCrumbClickedCallback ){
 		this.element = anElement;
 		this.onCrumbClickedCallback = onCrumbClickedCallback;
-		// log( "BreadCrumbTrail", this, this.element );
+		//console.log( "BreadCrumbTrail", this, this.element );
 	},
 	
 	toString: function(){
@@ -395,7 +395,7 @@ lattice.ui.navigation.BreadCrumbTrail = new Class({
 	
 	onCrumbClicked: function( e, obj ){
 		lattice.util.stopEvent( e );
-//		log( "::::: \t onBreadCrumbClicked", obj );
+//		console.log( "::::: \t onBreadCrumbClicked", obj );
 		this.onCrumbClickedCallback( obj );
 	},
 	
@@ -408,7 +408,7 @@ lattice.ui.navigation.BreadCrumbTrail = new Class({
 	removeCrumbByLabel: function( label ){
 		this.getCrumbs().each( function( aCrumb ){
 			if( label == aCrumb.retrieve( 'data' ).label ){
-//				log('!', label, aCrumb.retrieve( 'data' ).label, aCrumb );
+//				console.log('!', label, aCrumb.retrieve( 'data' ).label, aCrumb );
 				aCrumb.destroy();
 			}
 		});			
@@ -431,7 +431,7 @@ lattice.ui.ModalManager = new Class({
 	initialize: function(){},
 	
 	addListener: function( aListener ){
-//		log( this.toString(), "addListener", aListener );
+//		console.log( this.toString(), "addListener", aListener );
 		this.parent( aListener );
 	},
 	
@@ -462,7 +462,7 @@ lattice.ui.ModalManager = new Class({
 	
 	getScroll: function(){
 		var returnVal =  ( this.activeModal )? this.activeModal.element.getScroll() : window.getScroll();
-//		log( this.toString(), "getScroll", returnVal );
+//		console.log( this.toString(), "getScroll", returnVal );
 		return returnVal;
 	},
 
@@ -532,7 +532,7 @@ lattice.ui.Sortable = new Class({
 		}
 	},
 	initialize: function( anElement, marshal, scrollerTarget ){
-//	    log( ":: lattice.ui.Sortable", anElement, marshal, scrollerTarget );
+//	   console.log( ":: lattice.ui.Sortable", anElement, marshal, scrollerTarget );
 		this.marshal = marshal;
 		this.element = anElement;
 		this.parent( anElement, this.options );
@@ -1318,7 +1318,7 @@ lattice.ui.FileElement = new Class({
 
 	clearFile: function( e ){
 		e.preventDefault();
-		// log( 'clearField' );
+		//console.log( 'clearField' );
 		if( this.previewElement ){
 			this.imageFadeOut = new Fx.Morph( this.imagePreview, {
 				'duration': 300,
@@ -1392,7 +1392,7 @@ lattice.ui.FileElement = new Class({
 	},
 
 	validate: function() {
-//		log( this.toString(), 'validate' );
+//		console.log( this.toString(), 'validate' );
 		var options = this.uploader.options;
 		if (options.fileListMax && this.uploader.fileList.length >= options.fileListMax) {
 			this.validationError = 'fileListMax';
@@ -1407,14 +1407,14 @@ lattice.ui.FileElement = new Class({
 	},
 
 	invalidate: function() {
-//		log( this.toString(), "invalidate" );
+//		console.log( this.toString(), "invalidate" );
 		this.invalid = true;
 		this.uploader.fireEvent( 'fileInvalid', this, 10 );
 		return this.fireEvent( 'invalid', this, 10 );
 	},
 
 	render: function() {
-//		log( this.toString(), 'render' );
+//		console.log( this.toString(), 'render' );
 		this.addEvents({
 			'start': this.onStart,
 			'progress': this.onProgress,
@@ -1426,21 +1426,21 @@ lattice.ui.FileElement = new Class({
 	},
 
 	showProgress: function( data ) {
-//		log( this.toString(), "onProgress", $A( arguments ) );
+//		console.log( this.toString(), "onProgress", $A( arguments ) );
 		this.progressBar.setStyle( "background-position", ( 100 - data.percentLoaded )+"% 0%" );
 		if( this.imagePreview ) this.imagePreview.setStyle( "opacity", ( 1 - data.percentLoaded * .01 ) );
 
 	},	
 	
 	showStatus: function(){
-//		log( this.toString(), "showStatus", $A( arguments ) );
+//		console.log( this.toString(), "showStatus", $A( arguments ) );
 		lattice.eventManager.broadcastMessage("resize");
  		this.statusShow.start( { "opacity": [0,1] } );
 		this.statusElement.removeClass("hidden");
 	},
 	
 	revertToReadyState: function(){
-//		log( this.toString(), "revertToReadyState" );
+//		console.log( this.toString(), "revertToReadyState" );
 		this.statusElement.addClass('hidden');
 //		this.statusHide.start( { "opacity":[1,0] });
 	},

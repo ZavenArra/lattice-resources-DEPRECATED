@@ -6,19 +6,19 @@ lattice.modules.Associator = new Class({
 
 	getSaveFieldURL: function( itemObjectId ){
 	  var url = lattice.util.getBaseURL() +"ajax/data/associator/savefield/" + itemObjectId;
-//		log( '\t\getSaveFieldURL', url );
+//		console.log( '\t\getSaveFieldURL', url );
 		return url;
 	},
 	
 	getAssociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
-//		log( '\t\getAssociateURL', id );
+//		console.log( '\t\getAssociateURL', id );
 		return url;
 	},
 	
 	getDissociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/dissociate/' + id + "/" + itemid + "/" + latticeid;
-//		log( '\t\getDissociateURL', url );
+//		console.log( '\t\getDissociateURL', url );
 		return url;
 	},
 	
@@ -51,14 +51,14 @@ lattice.modules.RadioAssociator = new Class({
 	/* Section: Getters & Setters */	
 	getAssociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
-//		log( 'getAssociateURL', id, itemid, latticeid  );
-//		log( url );
+//		console.log( 'getAssociateURL', id, itemid, latticeid  );
+//		console.log( url );
 		return url;
 	},
 	
 	getDissociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/dissociate/' + id + "/" + itemid + "/" + latticeid;
-//		log( '\t\getDissociateURL', url );
+//		console.log( '\t\getDissociateURL', url );
 		return url;
 	},
 	
@@ -79,14 +79,14 @@ lattice.modules.CheckboxAssociator = new Class({
 
 	getAssociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
-//	log( 'getAssociateURL', id, itemid, latticeid  );
-//	log( url );
+//	console.log( 'getAssociateURL', id, itemid, latticeid  );
+//	console.log( url );
 		return url;
 	},
 	
 	getDissociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/dissociate/' + id + "/" + itemid + "/" + latticeid;
-//	log( '\t\getDissociateURL', url );
+//	console.log( '\t\getDissociateURL', url );
 		return url;
 	},
 	

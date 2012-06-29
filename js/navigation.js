@@ -45,7 +45,7 @@ lattice.modules.navigation.Navigation = new Class({
 	},
 	
 	onAppStateChanged: function( appState ){
-//		log( 'lattice.modules.navigation.Navigation.appStateChanged', appState );
+//		console.log( 'lattice.modules.navigation.Navigation.appStateChanged', appState );
 	},
 
 	onObjectNameChanged: function( objId, response ){
@@ -60,7 +60,7 @@ lattice.modules.navigation.Navigation = new Class({
 		this.clearPendingTierRequest();
 		node = this.nodeData[ nodeId ];
 		paneIndex = ( this.getVisibleTiers().indexOf( tier ) > 0 )? this.getVisibleTiers().indexOf( tier ) : 0;		
-//		log( "onNodeClicked ", nodeId, tier );
+//		console.log( "onNodeClicked ", nodeId, tier );
 		this.detachTiers( paneIndex + 1 );
 		this.removeCrumbs( paneIndex + 1 );
 		this.breadCrumbs.addCrumb( { label: node.title, tier: tier, nodeData: node } );
@@ -75,12 +75,12 @@ lattice.modules.navigation.Navigation = new Class({
 		tier = crumbData.tier;
 		node = crumbData.nodeData;
 		paneIndex = ( this.getVisibleTiers().indexOf( tier ) > 0 )? this.getVisibleTiers().indexOf( crumbData.tier ) : 0;
-		// log( "prepareTier ", tier, paneIndex, node );
+		//console.log( "prepareTier ", tier, paneIndex, node );
 		this.detachTiers( paneIndex + 1 );
 		this.removeCrumbs( paneIndex + 1 );
 		if( node ){
 			this.breadCrumbs.addCrumb( { label: node.title, tier: tier, nodeData: node } );
-			// log( "onCrumbClicked", node, node.id, tier );
+			//console.log( "onCrumbClicked", node, node.id, tier );
 			if( node.objectType == 'object' ) this.requestTier( node.id, tier );
 			if( this.getNodeTypeFromId( node.id ) == 'object' ){ 
 				this.marshal.onNodeSelected( node.id );
@@ -107,11 +107,11 @@ lattice.modules.navigation.Navigation = new Class({
 	},
 	
 	requestTier: function( nodeId, parentTier, deepLink ){
-		// log( 'requestTier', nodeId, parentTier, deepLink );
+		//console.log( 'requestTier', nodeId, parentTier, deepLink );
 		cached = ( this.tiers[ nodeId ] && !deepLink )? true : false;
 		if( cached ){
 			console.group();
-			// log( "cached: ", cached );
+			//console.log( "cached: ", cached );
 			this.renderPane( this.tiers[ nodeId ] );
 		}else{
 			this.pendingPane = this.addPane();
@@ -142,11 +142,11 @@ lattice.modules.navigation.Navigation = new Class({
 		this.breadCrumbs =  new lattice.ui.navigation.BreadCrumbTrail( this.element.getElement( ".breadCrumb" ), this.onCrumbClicked.bind( this ) );
 		this.rootId = this.dataSource.getRootNodeId();
 		this.userLevel = ( Cookie.read( 'userLevel' ) )? Cookie.read( 'userLevel' ) : "superuser";
-		// log( "/////////////////////////////////" );
-		// log( "rootId:", this.rootId );	
-		// log( "userLevel:", this.userLevel );
-		// log( "appState:", lattice.historyManager.getAppState() );
-		// log( "/////////////////////////////////" );
+		//console.log( "/////////////////////////////////" );
+		//console.log( "rootId:", this.rootId );	
+		//console.log( "userLevel:", this.userLevel );
+		//console.log( "appState:", lattice.historyManager.getAppState() );
+		//console.log( "/////////////////////////////////" );
 		var deepLink = ( lattice.historyManager.getAppState().slug )? lattice.historyManager.getAppState().slug : null;
 		this.breadCrumbs.addCrumb( { label: '/' } );		
 		this.requestTier( this.rootId, null, deepLink );
@@ -179,7 +179,7 @@ lattice.modules.navigation.Navigation = new Class({
 				this.processNodeData( node.tier.nodes, node.tier.html, node.id, this.addPane() );
 			}
 		}, this );
-//		log( 'processNodeData creating new tier with id', tierId );
+//		console.log( 'processNodeData creating new tier with id', tierId );
 		var tier = new lattice.modules.navigation.Tier( this, html, tierId );
 		this.tiers[ tierId ] = tier;
 		this.renderPane( tier, containerPane, tierId );
@@ -229,7 +229,7 @@ lattice.modules.navigation.Navigation = new Class({
 	},
 
 	onAddObjectResponse: function( json, parentId, tierInstance ){
-		log( "onAddObjectResponse", json );
+		console.log( "onAddObjectResponse", json );
 		this.nodeData[ json.response.data.id ] = json.response.data;
 		var newNode = json.response.html.toElement();
 		tierInstance.adoptNode( newNode );
@@ -295,7 +295,7 @@ lattice.modules.navigation.Tier = new Class({
 	initialize: function( aMarshal, html, nodeId ){
 		this.marshal = aMarshal;
 		this.html = html;
-//		log( 'Tier.initialize.id', nodeId );
+//		console.log( 'Tier.initialize.id', nodeId );
 		this.id = nodeId;
 	},
 
