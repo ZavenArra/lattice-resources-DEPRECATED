@@ -17,40 +17,40 @@
 #navigation .grid_2,
 #navigation .grid_3,
 #navigation .grid_4{
-    margin: 0 0 0 0;
+	margin: 0 0 0 0;
 }
 
 #navigation .panes{
-    height: 100%;
-    position: relative;
+	height: 100%;
+	position: relative;
 }
 
 #navigation .pane{
-    height: 100%;
-    width: 300px;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-    float: left;
-		background: #f8f8f8 url( ../images/nav_bg.gif ) repeat-y;
+	height: 100%;
+	width: 300px;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	float: left;
+	background: #f8f8f8 url( ../images/nav_bg.gif ) repeat-y;
 }
 
 #navigation .pane.dark{
-		background: #313232 url( ../images/nav_bg_dark.gif ) repeat-y;
+	background: #313232 url( ../images/nav_bg_dark.gif ) repeat-y;
 }
 
 #navigation ul.nodes{
-    list-style: none;
-    overflow: auto;
-    height: 100%;
+	list-style: none;
+	overflow: auto;
+	height: 100%;
 }
 
 #navigation .node,
 .tierMethodsDrawer .addableObjects li{
-    line-height: 2;
- 		height: 2em;
-    padding: .25em 0;
-    border-bottom:1px #cdf solid;    
-    font-size: 1.125em;
+	line-height: 2;
+	height: 2em;
+	padding: .25em 0;
+	border-bottom:1px #cdf solid;    
+	font-size: 1.125em;
 	/*width: 100%;*/
 }
 
@@ -152,13 +152,13 @@
 }
 
 .tierMethodsDrawer{
-    position: absolute;
-		width: 300px;
-    font-size: 12px;
-    top: 25.45em;
-    z-index: 1000;
-    background: url( ../images/navBgDark.png	);
-		color: #fff;
+	position: absolute;
+	width: 300px;
+	font-size: 12px;
+	top: 25.45em;
+	z-index: 1000;
+	background: url( ../images/navBgDark.png	);
+	color: #fff;
 }
 
 .tierMethodsDrawer .titleBar{
@@ -166,14 +166,14 @@
 }
 
 .tierMethodsDrawer h5.title{
-    font-size: 12px;
-		line-height: 2;
-    cursor: pointer;
-		color: #ccc;
-		width: 250px;
-		float: left;
-		font-family: Georgia;
-		font-style: italic;
+	font-size: 12px;
+	line-height: 2;
+	cursor: pointer;
+	color: #ccc;
+	width: 250px;
+	float: left;
+	font-family: Georgia;
+	font-style: italic;
 }
 
 .tierMethodsDrawer .icon.close{
@@ -192,13 +192,13 @@
 }
 
 .tierMethodsDrawer li{
-    border-bottom: 1px #303030 solid !important;
-    padding: .25em .5em;
-    cursor: pointer;
+	border-bottom: 1px #303030 solid !important;
+	padding: .25em .5em;
+	cursor: pointer;
 }
 
 .tierMethodsDrawer li:hover{
-    background: #333;
+	background: #333;
 }
 
 .tierMethodsDrawer .addableObjects h5{
@@ -209,5 +209,5 @@
 }
 
 .tierMethodsDrawer .addableObjects li:hover h5{
-    color: #eee;
+	color: #eee;
 }

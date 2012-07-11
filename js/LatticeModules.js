@@ -745,12 +745,12 @@ lattice.modules.LatticeCheckboxAssociator = new Class({
 
 	onItemClicked: function( e, el ){
 		console.log( 'onItemClicked', el );
-		if( el.get("checked") ){
+		if( !el.hasClass("selected") ){
 			// uncheck
-			el.addClass("active");			
+			el.addClass("selected");			
 			this.associateRequest( el );
 		}else{
-			el.removeClass("active");
+			el.removeClass("selected");
 			this.dissociateRequest( el );
 		}
 	},
@@ -788,7 +788,7 @@ lattice.modules.LatticeCheckboxAssociator = new Class({
 	
 	build: function(){
 		this.parent();
-		this.element.getElements('input[type=checkbox]').each( function( el ){
+		this.element.getElements('.toggle').each( function( el ){
 			el.addEvent( 'click', this.onItemClicked.bindWithEvent( this, el ) );
 		}, this );
 	},	
