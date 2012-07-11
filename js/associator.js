@@ -74,9 +74,14 @@ lattice.modules.RadioAssociator = new Class({
 lattice.modules.CheckboxAssociator = new Class({
 	
 	Extends: lattice.modules.LatticeCheckboxAssociator,
-	
-	/* Section: Getters & Setters */	
 
+	initialize: function( anElement, aMarshal, options ){
+		console.log( 'checkbox associator constructor' );
+		this.parent( anElement, aMarshal, options );
+	},
+
+	/* Section: Getters & Setters */	
+	
 	getAssociateURL: function( id, itemid, latticeid ){
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
 //	console.log( 'getAssociateURL', id, itemid, latticeid  );
@@ -92,9 +97,6 @@ lattice.modules.CheckboxAssociator = new Class({
 	
 	toString: function(){
 		return "[ object, lattice.LatticeObject, lattice.modules.Module, lattice.modules.LatticeAssociator, lattice.modules.CheckboxAssociator ]";
-	},
-	
-	initialize: function( anElement, aMarshal, options ){
-		this.parent( anElement, aMarshal, options );
 	}
+
 });

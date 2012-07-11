@@ -37,11 +37,11 @@ General
 .floatRight{ float:right !important; }
 
 .clearFix:after {
-   content: ".";
-   display: block;
-   height: 0;
-   clear: both;
-   visibility: hidden;
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
 }
 
 /* ----------------------------------------
@@ -369,6 +369,42 @@ ul.listing li{
 
 .associator .paginator li a:hover{
 	background: #aaa;
+}
+
+.associator_checkboxes .toggle{
+	border-radius: 3px;
+	background: #dedede;
+	margin: 0 .5em .5em 0;
+	float: left;
+	padding: .25em 1.25em .25em .5em;
+	color: #fff;
+	cursor: pointer;
+}
+
+#refreshPageButton{
+	margin-bottom: 3em;
+	clear: both;
+	float: none;
+}
+
+.clientUserListing .clients li{
+	border-bottom: 1px #dedede solid;
+	padding: .25em 0em;
+	float: left;
+	margin: 0 0 .25em .25em;
+}
+
+.associator_checkboxes .toggle *{
+	cursor: pointer;
+}
+.associator_checkboxes .toggle.selected{
+	background: #fff399 url( '../images/icon-12x12-close.png' ) right .45em no-repeat;
+	color:#222;
+	box-shadow: 1px 1px 1px #ccc;
+}
+
+.associator_checkboxes .toggle input{
+	display: none;
 }
 
 /*.controls{ margin-bottom: 1em; }
@@ -1247,7 +1283,8 @@ fieldset.padded{
 .section{
 	border-top:#dedede 1px solid;
 /*	border-bottom:#dedede 1px solid;
-*/	padding: 1em 0; 
+*/
+	padding: 1em 0; 
 	margin: 0 0 1em 0;
 }
 
