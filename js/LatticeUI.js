@@ -119,7 +119,7 @@ lattice.ui.UIField = new Class({
 		if( this.showSaving ) this.showSaving();
 		if( this.leaveEditMode ) this.leaveEditMode();
 		
-		var controller = ( this.element.getData( 'controller' ) )? this.element.getData( 'controller' ) : 'controller';
+		var controller = ( this.element.getData( 'controller' ) )? this.element.getData( 'controller' ) : 'cms';
 		var action = ( this.element.getData( 'action' ) )? this.element.getData( 'action' ) : 'savefield';
 		
 		console.log( 'submit', this.fieldName, controller, action );
@@ -1971,7 +1971,7 @@ lattice.ui.CheckBox = new Class({
 		}
 		if( this.showSaving ) this.showSaving();
 		if( this.leaveEditMode ) this.leaveEditMode();
-		var controller = ( this.element.getData( 'controller' ) )? this.element.getData( 'controller' ) : 'controller';
+		var controller = ( this.element.getData( 'controller' ) )? this.element.getData( 'controller' ) : 'cms';
 		var action = ( this.element.getData( 'action' ) )? this.element.getData( 'action' ) : 'savefield';
 
 		console.log( 'submit', this.fieldName, controller, action );
