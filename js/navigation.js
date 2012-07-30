@@ -142,11 +142,6 @@ lattice.modules.navigation.Navigation = new Class({
 		this.breadCrumbs =  new lattice.ui.navigation.BreadCrumbTrail( this.element.getElement( ".breadCrumb" ), this.onCrumbClicked.bind( this ) );
 		this.rootId = this.dataSource.getRootNodeId();
 		this.userLevel = ( Cookie.read( 'userLevel' ) )? Cookie.read( 'userLevel' ) : "superuser";
-		//console.log( "/////////////////////////////////" );
-		//console.log( "rootId:", this.rootId );	
-		//console.log( "userLevel:", this.userLevel );
-		//console.log( "appState:", lattice.historyManager.getAppState() );
-		//console.log( "/////////////////////////////////" );
 		var deepLink = ( lattice.historyManager.getAppState().slug )? lattice.historyManager.getAppState().slug : null;
 		this.breadCrumbs.addCrumb( { label: '/' } );		
 		this.requestTier( this.rootId, null, deepLink );
@@ -158,7 +153,7 @@ lattice.modules.navigation.Navigation = new Class({
 		newPane = this.getPaneTemplate().clone();
 		elementDimensions = this.container.getDimensions();
 		this.element.getElement( ".panes" ).adopt( newPane );
-		// this.container.setStyle( "width", elementDimensions.width + newPane.getDimensions().width );
+		this.container.setStyle( "width", elementDimensions.width + newPane.getDimensions().width );
 		newPane.get( "spinner" ).show( true );
 		return newPane;
 	},

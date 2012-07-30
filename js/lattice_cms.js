@@ -89,10 +89,11 @@ lattice.modules.CMS = new Class({
 	},
 
 	getSaveFieldURL: function( controller, action ){
-		console.log( 'getSaveFieldURL', controller, action, this.getObjectId );
 		controller = ( controller )? controller : 'cms';
 		action = ( action )? action : 'savefield';
-		return  lattice.util.getBaseURL() + "ajax/data/" + controller + "/"+ action + "/"+ this.getObjectId();
+		var url = lattice.util.getBaseURL() + "ajax/data/" + controller + "/"+ action + "/"+ this.getObjectId();
+		console.log( 'getSaveFieldURL', controller, action, this.getObjectId(), url );
+		return url;
 	},	
 
 	getSubmitSortOrderURL: function( nodeId ){
@@ -130,13 +131,6 @@ lattice.modules.CMS = new Class({
     this.parent( anElement, null, options );
 		this.loc = lattice.defaultLanguage;
 		this.pageSlideFx = new Fx.Scroll( this.element.getElement('.pagesPane') );
-/*
-   console.log( '============================================================' );
-   console.log( 'CMS INIT' );
-   console.log( '\tloc', lattice.defaultLanguage );
-   console.log( '============================================================' );
-*/
-		this.loc = lattice.defaultLanguage;
     this.rootNodeId = this.options.rootObjectId;
     $$( "script" ).each( function( aScriptTag ){ 
         this.loadedJS.push( aScriptTag.get("src") );
@@ -257,7 +251,6 @@ lattice.modules.CMS = new Class({
 	requestTranslatedPage: function( nodeId, loc ){
 		if( !loc ) loc = this.loc;
 		this.setObjectId( nodeId );
-		//console.log( 'requestTranslatedPage', loc );
 		var url = this.getRequestTranslatedPageURL( nodeId, loc );
 		return new Request.JSON( { url: url, onSuccess: this.requestPageResponse.bind( this ) } ).send();
 	},
@@ -280,7 +273,6 @@ lattice.modules.CMS = new Class({
 		if( json.response.js.length && json.response.js.length > 0){
 			json.response.js.each( function( urlString, i ){
 			urlString = lattice.util.getBaseURL() + urlString;
-			//               console.log( ":::: ", urlString, this.loadedJS.indexOf( urlString ) );
 			if( this.loadedJS.indexOf( urlString ) == -1 ){
 				noneLoaded = false;
 				this.loadedJS.push( urlString );
@@ -342,7 +334,6 @@ lattice.modules.CMS = new Class({
 	},
 
 	addObjectRequest: function( parentId, templateId, nodeProperties, callback ){
-		console.log( "addObjectRequest", parentId, templateId, nodeProperties, callback );
 		return new Request.JSON({
 			url: this.getAddObjectRequestURL( parentId, templateId ),
 			onSuccess: function( json  ){
@@ -515,10 +506,8 @@ lattice.modules.CMSPage = new Class({
 		elementClass = anElement.get( 'class' );
 		classPath = lattice.util.getValueFromClassName( "classPath", elementClass ).split( "_" );
 		classPath.each( function( node ){ 
-			console.log("::::::", node );
 			ref = ( !ref )? this[node] : ref[node]; 
 		});
-		console.log("::::", elementClass, this.marshal );
 		newModule = new ref( anElement, this.marshal );
 		return newModule;		
 	},
@@ -526,7 +515,6 @@ lattice.modules.CMSPage = new Class({
 	clearContent: function(){
 		this.destroyChildModules( this.element );
 		this.destroyUIFields( this.element );
-//		console.log( ">>>>>> ", this.element );
 		if( this.element ) this.element.empty();
 	},
 	
