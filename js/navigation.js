@@ -224,7 +224,7 @@ lattice.modules.navigation.Navigation = new Class({
 	},
 
 	onAddObjectResponse: function( json, parentId, tierInstance ){
-		console.log( "onAddObjectResponse", json );
+//		console.log( "onAddObjectResponse", json );
 		this.nodeData[ json.response.data.id ] = json.response.data;
 		var newNode = json.response.html.toElement();
 		tierInstance.adoptNode( newNode );
