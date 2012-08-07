@@ -6,7 +6,7 @@
 	clear: both;
 }
 
-#navigation .container{
+#navigation>.container{
 	height:24em;    
 	overflow:hidden;
 	border-top:1px #ccc solid;
@@ -57,23 +57,30 @@
 
 #navigation .node.active,
 #navigation .node:hover,
-#navigation .node:hover h5,
-#navigation .node.active h5,
 .addableObjects li:hover{
 	cursor: pointer;
 	background-color: #0af;
 	color:#fff;
 }
 
+#navigation .node.active h5,
+#navigation .node:hover h5{
+	color:#fff;
+}
+
 #navigation .node h5{
 	font-size: .875em;
-	line-height:1.2em;
+	line-height:1.4em;
 	margin: 0 0 0 0;
-	padding:.5em 0 .5em 2.5em;
-	float: left;
+	padding: 8px 0 9px 32px;
+	display:inline-block;
 	background-image: url( ../images/icon_leaf.png );
-	background-position: 1em .5em;
-	background-repeat: no-repeat;	
+	background-position: 12px 10px;
+	background-repeat: no-repeat;
+	width: 214px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 
@@ -94,7 +101,7 @@
 #navigation .node.active h5,
 #navigation .node:hover h5{
 	background-image: url( ../images/icon_leaf_hover.png );
-	background-position: 1em .5em;
+	background-position: 12px 10px;
 	background-repeat: no-repeat;
 }
 
@@ -166,14 +173,14 @@
 }
 
 .tierMethodsDrawer h5.title{
-	font-size: 12px;
-	line-height: 2;
-	cursor: pointer;
-	color: #ccc;
-	width: 250px;
-	float: left;
-	font-family: Georgia;
-	font-style: italic;
+    font-size: 12px;
+		line-height: 2;
+    cursor: pointer;
+		color: #ccc;
+		width: 250px;
+		float: left;
+		font-family: Georgia;
+		font-style: italic;
 }
 
 .tierMethodsDrawer .icon.close{
