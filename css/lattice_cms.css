@@ -37,11 +37,11 @@ General
 .floatRight{ float:right !important; }
 
 .clearFix:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
+   content: ".";
+   display: block;
+   height: 0;
+   clear: both;
+   visibility: hidden;
 }
 
 /* ----------------------------------------
@@ -489,7 +489,6 @@ ul.listing li{
 .associator .actuator .actuatorButton{
 	text-indent: 2em !important;
 }
-
 
 .associator .actuator a.actuatorButton{
 	display: block;
