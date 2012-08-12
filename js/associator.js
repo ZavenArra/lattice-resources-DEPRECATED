@@ -83,8 +83,8 @@ lattice.modules.CheckboxAssociator = new Class({
 	/* Section: Getters & Setters */	
 	
 	getAssociateURL: function( id, itemid, latticeid ){
+		console.log( 'getAssociateURL', id, itemid, latticeid  );
 		var url = lattice.util.getBaseURL() + 'ajax/html/associator/associate/' + id + "/" + itemid + "/" + latticeid;
-//	console.log( 'getAssociateURL', id, itemid, latticeid  );
 //	console.log( url );
 		return url;
 	},
