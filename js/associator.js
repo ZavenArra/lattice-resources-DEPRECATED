@@ -30,7 +30,7 @@ lattice.modules.Associator = new Class({
 	
 	getFilterPoolByWordsURL: function( pid, latticeid, word ){
 		var url = lattice.util.getBaseURL() + "ajax/html/associator/filterPoolByWord/" + pid + "/" + latticeid + "/" + word;
-		log( '\t\getFilterPoolByWordURL', url );
+		console.log( '\t\getFilterPoolByWordURL', url );
 		return url;
 	},
 	
