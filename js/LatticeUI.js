@@ -2388,7 +2388,7 @@ lattice.ui.Text = new Class({
 	},
 
 	showSaving: function(){
-//		log('showSaving');
+//	console.log('showSaving');
 		this.mode = 'saving';
 		this.ipeElement.addClass( 'saving' );
 		this.ipeElement.setStyle( 'opacity', .2 );
