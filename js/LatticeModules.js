@@ -900,8 +900,6 @@ lattice.modules.LatticeAssociator = new Class({
 		this.initControls();
 		this.initItems();
 
-		this.filterSubmitButton = this.element.getElement(".filterButton");
-		if( this.filterButton )	this.filterSubmitButton.addEvent('click', this.filterPoolByWords.bindWithEvent( this ) );
 		this.makeSortable( this.associated );
 
 	},
@@ -948,23 +946,29 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 
 	initControls: function(){
-			this.controls = this.element.getChildren( ".controls" );
-			this.controls.each( function( controlGroup ){
-				controlGroup.getElements( ".associate" ).each( function( item ){
-					item.addEvent("click", this.associateRequest.bindWithEvent( this, item ) )
-				}, this );
+		console.log( 'initControls' );
+		this.controls = this.element.getChildren( ".controls" );
+		this.controls.each( function( controlGroup ){
+			controlGroup.getElements( ".associate" ).each( function( item ){
+				item.addEvent("click", this.associateRequest.bindWithEvent( this, item ) )
 			}, this );
-		},
+		}, this );
+		console.log( "element", this.element );
+		console.log( "filterbutton", this.element.getElement('.filterButton' ) );
+		this.filterSubmitButton = this.element.getElement(".filterButton");
+		if( this.filterSubmitButton )	this.filterSubmitButton.addEvent('click', this.filterPoolByWord.bindWithEvent( this ) );
+		console.log( this.filterSubmitButton );
+	},
    
-    getClassFromClassPath: function( classPath, delimiter ){
-      var ref;			
-      delimiter = ( !delimiter )? "_" : delimiter;
-      classPath = classPath.split( delimiter );
-      classPath.each( function( node ){
-         ref = ( !ref )? this[node] : ref[node]; 
-      });
-      return ref;
-   },
+  getClassFromClassPath: function( classPath, delimiter ){
+    var ref;			
+    delimiter = ( !delimiter )? "_" : delimiter;
+    classPath = classPath.split( delimiter );
+    classPath.each( function( node ){
+       ref = ( !ref )? this[node] : ref[node]; 
+    });
+    return ref;
+ },
 	
 	associateRequest: function( item ){
 //		console.log( 'addObjectRequest', item, this.toString() );
