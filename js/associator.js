@@ -32,7 +32,7 @@ lattice.modules.Associator = new Class({
 		var url = lattice.util.getBaseURL() + "ajax/html/associator/filterPoolByWord/" + pid + "/" + latticeid + +"/0"+"/" + word;
   	//stuffing in page number as 0
 
-		log( '\t\getFilterPoolByWordURL', url );
+		console.log( '\t\getFilterPoolByWordURL', url );
 		return url;
 	},
 	
