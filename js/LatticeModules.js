@@ -866,6 +866,7 @@ lattice.modules.LatticeAssociator = new Class({
 		this.poolList.unspin();
 		this.poolList.empty();
 		this.poolList.set( "html",  json.response.html );
+
 		this.initItems();
 	},
 	
@@ -911,19 +912,22 @@ lattice.modules.LatticeAssociator = new Class({
 		navItem.addClass('active');
 		return new Request.JSON( { 
 			url: navItem.get('href'),
-			onSuccess: this.onGetPageResponse.bind( this )
+			onSuccess: this.onGetAssociatorPageResponse.bind( this )
  			} ).send();
 	},
 	
-	onGetPageResponse: function( json ){
-		console.log( "onGetPageResponse", json );
+	onGetAssociatorPageResponse: function( json ){
+		console.log( "onGetAssociatorPageResponse", json );
 		this.poolList.empty();
 		this.poolList.set( "html",  json.response.html );
+		this.initItems();
 	},
 	
 	initItems: function(){
+		console.log('initItems');
     var items = this.element.getElements( "ul.associated li" ).combine( this.element.getElements( "ul.pool li" ) );
 		items.each( function( el ){
+		console.log('\t\tinitItem', el );
 			this.initItem( el );
 		}, this );
   },
@@ -990,7 +994,7 @@ lattice.modules.LatticeAssociator = new Class({
 
 	dissociateRequest: function( item ){
 		//console.log("dissociate", item, item.getObjectId(), this.poolList );
-		this.poolList.grab( item.element );
+		this.poolList.grab( item.element, 'top' );
     item.element.spin();
 		this.onOrderChanged();
 		this.sortableList.removeItems( item.element );
