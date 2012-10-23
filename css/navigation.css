@@ -73,11 +73,11 @@
 	line-height:1.4em;
 	margin: 0 0 0 0;
 	padding: 8px 0 9px 32px;
-	display:inline-block;
+	float: left;
 	background-image: url( ../images/icon_leaf.png );
 	background-position: 12px 10px;
 	background-repeat: no-repeat;
-	width: 214px;
+	width: 200px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
