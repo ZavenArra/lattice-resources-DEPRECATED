@@ -853,8 +853,8 @@ lattice.modules.LatticeAssociator = new Class({
 	filterPoolByWord: function( e ){
 		e.preventDefault();
 		this.poolList.spin();
-		var word = this.element.getElement( '.filter input' ).get("value");
-		var url = this.getFilterPoolByWordsURL( this.getObjectId(), this.element.get('data-lattice'), word );
+		this.filterWord = this.element.getElement( '.filter input' ).get("value");
+		var url = this.getFilterPoolByWordsURL( this.getObjectId(), this.element.get('data-lattice'), this.filterWord );
 		var jsonRequest = new Request.JSON({
 			url: url,
 			onSuccess: function( json ){ this.onFilteredPoolReceived(json); }.bind( this )
@@ -909,18 +909,23 @@ lattice.modules.LatticeAssociator = new Class({
 		e.preventDefault();
 		this.activePage.removeClass('active');
 		this.activePage = navItem;
+		this.poolList.spin();
 		navItem.addClass('active');
-		return new Request.JSON( { 
-			url: navItem.get('href'),
+		var url = ( this.filterWord )? navItem.get('href') + "/" + this.filterWord : navItem.get('href');
+		return new Request.JSON({
+			url: url,
 			onSuccess: this.onGetAssociatorPageResponse.bind( this )
- 			} ).send();
+ 		}).send();
 	},
 	
 	onGetAssociatorPageResponse: function( json ){
 		console.log( "onGetAssociatorPageResponse", json );
 		this.poolList.empty();
-		this.poolList.set( "html",  json.response.html );
+		this.poolList.set( "html", json.response.html );
+		// @BUG: pagination with word seems to return empty set
+		// @TODO: need to update pagination (and initialize it too) if possible in json.response.navHTML perhaps?
 		this.initItems();
+		this.poolList.unspin();
 	},
 	
 	initItems: function(){
