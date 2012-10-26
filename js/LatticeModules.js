@@ -848,14 +848,20 @@ lattice.modules.LatticeAssociator = new Class({
 		this.parent( anElement, aMarshal, options );
 		this.objectId = this.element.get( 'data-objectid' );
 		this.allowChildSort = ( this.element.get('data-allowchildsort') == 'true' )? true : false;
+		console.log( this.element )
+
+		console.log( this.element )
+		this.searchInput = this.element.getElement( ".actuator input[name~='filter']" );	
+		this.searchInput.addEvent( 'click', function(e){ e.stop(); this.searchInput.select(); }.bindWithEvent( this ) );
 	},
 	
 	filterPoolByWord: function( e ){
 		e.preventDefault();
 		this.poolList.spin();
-		this.filterWord = this.element.getElement( '.filter input' ).get("value");
-		var url = this.getFilterPoolByWordsURL( this.getObjectId(), this.element.get('data-lattice'), this.filterWord );
-		var jsonRequest = new Request.JSON({
+		var url, jsonRequest;
+		this.filterWord = this.searchInput.get("value");
+		url = this.getFilterPoolByWordsURL( this.getObjectId(), this.element.get('data-lattice'), this.filterWord );
+		jsonRequest = new Request.JSON({
 			url: url,
 			onSuccess: function( json ){ this.onFilteredPoolReceived(json); }.bind( this )
 		}).send();
@@ -1045,7 +1051,7 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 	
 	submitSortOrder: function( newOrder ){
-		console.log( 'submitSortOrder', this.getSubmitSortOrderURL(), this.oldSort != newOrder );
+		console.log( 'submitSortOrder', this.oldSort, newOrder, this.getSubmitSortOrderURL(), this.oldSort != newOrder );
 		if( this.oldSort != newOrder ){
 			clearInterval( this.submitDelay );
 			this.submitDelay = null;
