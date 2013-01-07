@@ -356,15 +356,7 @@ lattice.modules.CMS = new Class({
 		}).send();				
 	},
 	
-	addTag: function( tag, callback ){
-		return new Request.JSON({
-			url: this.getAddTagURL(),
-			onSuccess: function( json  ){
-				if( callback ) callback( json );
-			}.bind( this )
-		}).post( { tag: tag } );		
-	},
-	
+
 	removeTag: function( tag, callback ){
 		return new Request.JSON({
 			url: this.getRemoveTagURL(),

@@ -26,6 +26,22 @@ lattice.modules.Module = new Class({
 	*/
 	childModules: {},
 	
+
+	getAddTagURL: function(){
+    return lattice.util.getBaseURL() + "ajax/data/cms/addTag/" + this.getObjectId();		
+	},
+	
+	addTag: function( tag, callback ){
+		return new Request.JSON({
+			url: this.getAddTagURL(),
+			onSuccess: function( json  ){
+				if( callback ) callback( json );
+			}.bind( this )
+		}).post( { tag: tag } );		
+	},
+
+
+
 	getSaveFieldURL: function(){
 		throw "Abstract function getSaveFieldURL must be overriden in" + this.toString();
 	},
