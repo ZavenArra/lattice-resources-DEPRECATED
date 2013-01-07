@@ -2919,6 +2919,7 @@ lattice.ui.Tags = new Class({
 	
 	addToken: function( aString ){
 		var token = this.tokenTemplate.clone();
+		console.log( this.marshal, this.marshal.addTag );
 		this.marshal.addTag( aString );
 		token.getElement( '.icon.close' ).addEvent( 'click', this.removeToken.bindWithEvent( this, [ token, aString ] ) )
 		token.getElement( 'span' ).set( 'html', aString );

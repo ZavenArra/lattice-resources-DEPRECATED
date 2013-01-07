@@ -341,9 +341,9 @@ lattice.modules.navigation.Tier = new Class({
 				this.drawer.addEvent( 'mouseleave', this.onDrawerMouseLeave.bindWithEvent( this ) );
 			}
 			// make nodes element shorter by the height of the addableObjects title height
-			if( this.nodeElement.getDimensions().height >= this.element.getDimensions().height ){
-				this.nodeElement.setStyle( 'height', this.element.getSize().y - this.drawer.getElement( "div.titleBar" ).getDimensions().height );
-			}
+			// if( this.nodeElement.getDimensions().height >= this.element.getDimensions().height ){
+			// 	this.nodeElement.setStyle( 'height', this.element.getSize().y - this.drawer.getElement( "div.titleBar" ).getDimensions().height );
+			// }
 		}
 	},
 

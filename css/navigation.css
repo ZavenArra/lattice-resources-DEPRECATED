@@ -26,12 +26,12 @@
 }
 
 #navigation .pane{
-	height: 100%;
-	width: 300px;
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
-	float: left;
-	background: #f8f8f8 url( ../images/nav_bg.gif ) repeat-y;
+    height: 100%;
+    width: 300px;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    display: inline-block;
+		background: #f8f8f8 url( ../images/nav_bg.gif ) repeat-y;
 }
 
 #navigation .pane.dark{
