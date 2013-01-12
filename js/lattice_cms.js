@@ -100,18 +100,6 @@ lattice.modules.CMS = new Class({
 	    return lattice.util.getBaseURL() + "ajax/data/cms/saveSortOrder/" + nodeId;
 	},
 	
-	getGetTagsURL: function(){
-    return lattice.util.getBaseURL() + "ajax/data/cms/getTags/" + this.getObjectId();		
-	},
-	
-	getAddTagURL: function(){
-    return lattice.util.getBaseURL() + "ajax/data/cms/addTag/" + this.getObjectId();		
-	},
-	
-	getRemoveTagURL: function(){
-    return lattice.util.getBaseURL() + "ajax/data/cms/removeTag/" + this.getObjectId();		
-	},
-
 	getClearFileURL: function( fieldName ){
 		return this.getClearFieldURL( fieldName );
 	},
@@ -346,25 +334,6 @@ lattice.modules.CMS = new Class({
 	addObjectResponse: function( json ){
 //		console.log( "addObjectResponse", json );
 	},
-
-	getTags: function( callback ){
-		return new Request.JSON({
-			url: this.getGetTagsURL(),
-			onSuccess: function( json  ){
-				if( callback ) callback( json );
-			}.bind( this )
-		}).send();				
-	},
-	
-
-	removeTag: function( tag, callback ){
-		return new Request.JSON({
-			url: this.getRemoveTagURL(),
-			onSuccess: function( json  ){
-				if( callback ) callback( json );
-			}.bind( this )
-		}).post( { tag: tag } );
-	},
 	
 	removeObjectRequest: function( parentId, callback ){
 		return new Request.JSON({
@@ -440,20 +409,31 @@ lattice.modules.CMSPage = new Class({
 				this.addEvent( 'uifieldsaveresponse', this.marshal.onUIFieldSaved.bind( this.marshal ) );
 			}
 			this.slugIPE = this.pageHeader.getElement( ".field-slug" );
+			this.metaIcon = this.pageHeader.getElement( "a.pageMeta" );
+			if( $('pageMeta') ){
+				this.pageMetaElement = $('pageMeta').dispose();
+				this.pageMetaElement.removeClass('hidden');
+				this.metaIcon.addEvent( 'click', this.showPageMeta.bindWithEvent( this ) );
+			}else{
+				this.metaIcon.destroy();
+			}
 		}
 		
-		this.initializeHideShowTabs();
 		this.initMoveWidget();
 		this.element.unspin();
 	},
 
-	initializeHideShowTabs: function(){
-		tabGroups = this.element.getElements('.tabGroup');
-		tabGroups.each( function( tabGroup ){
-			new lattice.ui.HideShowTabs( tabGroup );
-		});
+	showPageMeta: function( e ){
+		e.preventDefault();
+		
+		if( lattice.metaModal ){
+			lattice.modalManager.removeModal( lattice.metaModal );
+		}
+		
+		lattice.metaModal = new lattice.ui.Modal( this );		
+		lattice.metaModal.setContent( this.pageMetaElement,this.pageMetaElement.getElement('.header h3').get('html') );
+		lattice.metaModal.show();
 	},
-	
 	
 	initMoveWidget: function(){
 //		console.log( "initMoveWidget" );
