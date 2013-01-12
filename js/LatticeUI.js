@@ -1,6 +1,9 @@
 lattice.ui = {};
 lattice.ui.navigation = {};
 
+/*
+todo, this kinda crap goes away if we use sass+compass
+*/
 Element.implement({
 	roundCorners: function( radius ){
 		var borderStyle;
@@ -275,11 +278,11 @@ lattice.ui.Sticky = new Class({
 });
 
 
-lattice.ui.HideShowTabs = new Class({
+lattice.ui.Tabs = new Class({
 
 	initialize: function( el ){
-//		console.log( 'HideShowTabs', el );
 		this.element = el;
+		this.element.store( 'Class', this );
 		this.tabs = el.getElements( '.tabNav li');
 		this.tabs.each( function( tab ){
 			tab.addEvent( 'click', this.onTabClicked.bindWithEvent( this, tab ) );
@@ -288,9 +291,14 @@ lattice.ui.HideShowTabs = new Class({
 		this.activePanel = this.element.getElement( '.' + this.activeTab.get( 'data-targetselector' ) );
 	},
 
+	clickTab: function( selector ){
+		var targetTab = this.element.getElement( '.tabNav' + ' .' + selector + '-tab' );
+		this.onTabClicked( null, targetTab );
+	},
+
 	onTabClicked: function( e, tab ){
-		e.preventDefault();
-		var target = this.element.getElement( '.' + tab.get( 'data-targetselector' ) );
+		if( e ) e.preventDefault();
+		var target = this.element.getElement( '.tab-contents .' + tab.get( 'data-targetselector' ) );
 		this.activeTab.removeClass( 'active' );
 		this.activeTab = tab;
 		this.activePanel.addClass('hidden');
@@ -313,47 +321,6 @@ lattice.ui.FieldSticky = new Class({
 			lattice.eventManager.removeListener( this );
 			this.parent();
 		}
-});
-/*
-	Class: lattice.ui.navigation.Tabs
-	Generic helper for handling tabbed navigation
-	Simply takes an collection of elements with the passed selector from the passed element, and returns a reference of the clicked element to the callback function.
-	More generic than tabs for sure, but what to call? Buton collection?
-*/
-lattice.ui.navigation.Tabs = new Class({
-	
-	toString: function(){
-		return "[ object, lattice.ui.navigation.Tabs ]";
-	},
-	
-	initialize: function( anElement, aSelector, callback ){
-		this.tabs = anElement.getElements( aSelector );
-		this.callback = callback;
-		this.tabs.each( this.applyTabBehavior.bind( this ) );
-	},
-	
-	applyTabBehavior: function( aTab, anIndex ){
-//		console.log( this, "applyTabBehavior", aTab, anIndex );
-		aTab.addEvent( "click", this.onTabClicked.bindWithEvent( this, aTab ) );
-		if( aTab.hasClass( "active" ) ){
-			// this.activeTab = aTab;
-			this.onTabClicked( null, aTab );
-		}
-	},
-	
-	onTabClicked: function( e, aTab ){
-		lattice.util.stopEvent( e );
-		if( this.activeTab && this.activeTab == aTab ) return;
-		if( this.activeTab ) this.activeTab.removeClass( "active" );
-		aTab.addClass( "active" );
-		this.activeTab = aTab;
-		this.callback( aTab );
-	},
-	
-	destroy: function(){
-		this.tabs = this.callback = null;
-	}
-
 });
 
 /*
@@ -649,7 +616,9 @@ lattice.ui.Modal = new Class({
 			this.hideTransition.start({
 				onComplete: function(){
 					if( onComplete ) onComplete();
-					lattice.modalManager.removeModal( this );
+					this.element.setStyle( 'opacity', 0 );
+					this.element.addClass( 'hidden' );
+//					lattice.modalManager.removeModal( this );
 				}.bind( this )
 			});
 		},
@@ -672,14 +641,24 @@ lattice.ui.Modal = new Class({
 			this.setContent( json.html );
 		},
 
-		setContent: function( someContent, aTitle ){
+		setContent: function( someContent, aTitle, grab ){
 			if( aTitle ) this.setTitle( aTitle );
 			this.container.unspin();
 			if( typeof someContent == "string" ){
+				console.log("!!!!");
 				this.container.set( "html", someContent );
-			}else{
-				this.container.adopt( someContent );
+			}else if ( grab ){
+				console.log("!!!! grab ");
+				this.grabbedContent = someContent;
+				this.container.grab( this.grabbedContent );
+			} else {
+				console.log('c');
+				this.container.adopt( someContent );				
 			}
+		},
+
+		clearContent: function(){
+			this.container.empty();
 		},
 
 		destroy: function(){
@@ -687,6 +666,23 @@ lattice.ui.Modal = new Class({
 			this.element = this.modalAnchor = this.modal = this.header = this.headerControls = this.title = this.container = this.footer = this.footerControls = this.marshal = this.hideTransition = this.showTransision = null;
 		}		
 
+});
+
+lattice.ui.ModuleModal = new Class({
+	
+	Extends: lattice.ui.Modal,
+	Implements: Options,
+
+	initialize: function( aMarshal, options ){
+		this.parent( aMarshal, options );
+	},
+	cancel: function( e ){
+		lattice.util.stopEvent( e );
+		if( this.options.onCancel ) this.options.onCancel();
+		// put element back where it belongs
+		this.marshal.updateContentFromModal( this.grabbedContent );
+		this.close();
+	}
 });
 
 
@@ -1038,13 +1034,13 @@ lattice.ui.DatePicker = new Class({
 		
 	initialize: function( anElement, options ){
 		this.parent( anElement, options );
+		console.log( 'datepicker', anElement, options );
 		this.format = ( this.element.getData('format') )? this.element.getData('format') : this.options.format;
 		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
 		this.dateField = this.element.getElement("input");
 	    this.buildPicker();
 	},
-	
-    
+
 	toString: function(){
 		return '[ object, lattice.ui.UIField, lattice.ui.DatePicker ]';
 	},
@@ -1066,12 +1062,13 @@ lattice.ui.DatePicker = new Class({
 	
 	onShow: function(){
 		var scrollData = ( this.scrollContext == "modal" )? lattice.ModalManager.getActiveModal().getScrollOffset() : $( window ).getScroll();
-		this.reposition( scrollData );
+		console.log( 'onShow', scrollData );
+	//	this.reposition( scrollData );
 	},
 
-	reposition: function( scrollData ){
-		this.picker.reposition( scrollData );
-	},
+	// reposition: function( scrollData ){
+	// 	this.picker.reposition( scrollData );
+	// },
 	
 	onResponse: function( json ){
 		this.parent( json );
@@ -2190,7 +2187,7 @@ lattice.ui.Text = new Class({
 		this.ipeElement = new Element( "div", { 
 			"class": "ipe " + this.field.get( 'class' ).split( " " ).splice( 1 ).join(' '),
 			"html": this.field.get( 'value' )
-		}).inject( anElement );
+		}).inject( this.field, 'before' );
 
 		//set up reusable events by creating variables containing bound functions
 		this.documentBoundUpdateAndClose = this.onDocumentClicked.bindWithEvent( this );
@@ -2815,6 +2812,7 @@ lattice.ui.Tags = new Class({
 		this.parent( anElement, aMarshal, options );
 		this.field = this.element.getElement('.tagInput');
 		this.tokenList = this.element.getElement( 'ul.tokens' ); 
+		console.log( ":::", this.tokenList, this.tokenList.getChildren(), this.marshal.getElement() );
 		this.tokenTemplate = this.tokenList.getElement( '.token.template' ).dispose();
 		this.tokenTemplate.removeClass('template');
 		this.ogBg = this.tokenTemplate.getStyle( 'background-color' );
