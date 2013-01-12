@@ -31,6 +31,18 @@ lattice.modules.Module = new Class({
     return lattice.util.getBaseURL() + "ajax/data/cms/addTag/" + this.getObjectId();		
 	},
 	
+	getGetTagsURL: function(){
+    return lattice.util.getBaseURL() + "ajax/data/cms/getTags/" + this.getObjectId();		
+	},
+	
+	getAddTagURL: function(){
+    return lattice.util.getBaseURL() + "ajax/data/cms/addTag/" + this.getObjectId();		
+	},
+	
+	getRemoveTagURL: function(){
+    return lattice.util.getBaseURL() + "ajax/data/cms/removeTag/" + this.getObjectId();		
+	},
+
 	addTag: function( tag, callback ){
 		return new Request.JSON({
 			url: this.getAddTagURL(),
@@ -40,6 +52,23 @@ lattice.modules.Module = new Class({
 		}).post( { tag: tag } );		
 	},
 
+	getTags: function( callback ){
+		return new Request.JSON({
+			url: this.getGetTagsURL(),
+			onSuccess: function( json  ){
+				if( callback ) callback( json );
+			}.bind( this )
+		}).send();				
+	},
+	
+	removeTag: function( tag, callback ){
+		return new Request.JSON({
+			url: this.getRemoveTagURL(),
+			onSuccess: function( json  ){
+				if( callback ) callback( json );
+			}.bind( this )
+		}).post( { tag: tag } );
+	},
 
 
 	getSaveFieldURL: function(){
@@ -47,6 +76,7 @@ lattice.modules.Module = new Class({
 	},
 
   getSaveFileSubmitURL: function(){
+  	console.log( this.toString(), 'getSaveFileSubmit' );
    throw "Abstract function getSaveFileSubmit must be overriden in" + this.toString();
   },
 
@@ -97,8 +127,30 @@ lattice.modules.Module = new Class({
 	build: function(){
 		this.UIFields = this.initUI();
 		this.childModules = this.initModules( this.element );
+		this.tabGroups = this.initTabGroups( this.element )
+		this.modalActuators = this.initModalActuators( this.element );
 	},
 	
+	initTabGroups: function( el ){
+		var tabGroupElements = this.getModuleTabGroups( el );
+		var tabGroups = [];
+		tabGroupElements.each( function( tabgroup ){
+			tabGroups.push( new lattice.ui.Tabs( tabgroup ) );
+		});
+		return tabGroups;
+	},
+
+	initModalActuators: function( el ) {
+		var modalActuators = this.getModuleModalActuators( el );
+		modalActuators.each( function( actuator ){
+			actuator.addEvent( 'click', function( e ){
+				var modalContent = el.getElement('.modalContent');
+				this.showModal( modalContent.removeClass('hidden'), actuator.get( 'title' ), true );
+				e.preventDefault();
+			}.bind( this ) );
+		}, this );
+	},
+
 	toElement: function(){
 		return this.element;
 	},
@@ -106,7 +158,55 @@ lattice.modules.Module = new Class({
 	toString: function(){
 		return "[ object, lattice.modules.Module ]";
 	},
-	
+
+	showModal: function( el, title ) {
+		console.log( this.toString(), 'showModal' );
+		if( this.modal ){
+			this.modal.clearContent();
+		}else{
+			this.modal = new lattice.ui.ModuleModal( this );
+		}
+		this.modal.setContent( el, title, true );
+		this.modal.show();
+	},
+
+	updateContentFromModal: function( modalContent ){
+		console.log( modalContent );
+		this.element.grab( modalContent.addClass('hidden') );
+	},
+
+	/*
+		@Todo, add removeModal class??? or does closing the modal handle this?	
+		There are probably trash collection implications
+	*/
+	getModuleTabGroups: function( el ){
+		var tabGroups = [];
+		el.getChildren().each( function( aChild, anIndex ){
+			if( aChild.get('class') && aChild.hasClass( "tabGroup" ) ){
+				// if a child element has a class of .tabGroup it's a tabgroup this module needs to instantiate
+				console.log( 'add tab group:', this.toString(), aChild );
+				tabGroups.combine( [ aChild ] );
+			} else if( !aChild.hasClass( "modal" ) && !aChild.hasClass( "module" ) && !aChild.hasClass( "listItem" )  && !aChild.hasClass( "cluster" ) ){
+				//if this child element isnt a modal, module or listitem, it's just structural markup and we should grab it's children to see if they are potential tabGroups as well
+				tabGroups.combine( this.getModuleTabGroups( aChild ) );
+			}
+		}, this );
+		return tabGroups;
+	},
+
+	getModuleModalActuators: function( el ){
+		var modalActuators = [];
+		el.getChildren().each( function( aChild, anIndex ){
+			if( aChild.get('class') && aChild.hasClass( "modal-actuator" ) ){
+				modalActuators.combine( [ aChild ] );
+			} else if( !aChild.hasClass( "modal" ) && !aChild.hasClass( "module" ) && !aChild.hasClass( "listItem" )  && !aChild.hasClass( "cluster" ) ){
+				//if this child element isnt a modal, module or listitem, it's just structural markup and we should grab it's children to see if they are potential tabGroups as well
+				modalActuators.combine( this.getModuleModalActuators( aChild ) );
+			}
+		}, this );
+		return modalActuators;
+	},
+
 	/*
 		Function: initModules	
 		Loops through elements with the class "module" and initializes each as a module
@@ -145,7 +245,7 @@ lattice.modules.Module = new Class({
 	*/
 	initModule: function( anElement ){
 		//console.log( Array.from( arguments ) );
-		//console.log( "initModule", this.toString(),  "element", anElement );
+//		console.log( "initModule", this.toString(),  "element", anElement );
 		var elementClass = anElement.get( 'class' );
 		var classPath = lattice.util.getValueFromClassName( "classPath", elementClass ).split( "_" );
 		ref = null;
@@ -164,16 +264,18 @@ lattice.modules.Module = new Class({
 	getModuleUIFields: function( anElement ){
 		var elements = [];
 		anElement.getChildren().each( function( aChild, anIndex ){
-//			console.log( 'getModuleUIFields', aChild, aChild.get('class') );
 			if( aChild.get('class') && aChild.get( "class" ).indexOf( "ui-" ) > -1 ){
-//	   console.log( "\t\tfound ui field", aChild.get('class'), ':', aChild.get('data-field'), 'in', anElement.get('class') );
+				// if a child element has a class of ui-Something it's a uifield for this module
 				elements.combine( [ aChild ] );
 			} else if( !aChild.hasClass( "modal" ) && !aChild.hasClass( "module" ) && !aChild.hasClass( "listItem" ) ){
+				//if this child element isnt a modal, module or listitem, it's just structural markup and we should grab it's children ui-fields too.
 				elements.combine( this.getModuleUIFields( aChild ) );
 			}
 		}, this );
 		return elements;
 	},
+
+
 	/*
 		Function: initUI
 		loops through child elements and instantiates ui elements that dont live inside other modules
@@ -253,10 +355,13 @@ Extends: lattice.modules.Module,
 		return "[Object, lattice.LatticeObject, lattice.modules.Module, lattice.modules.Cluster ]";
 	},
 
+	//hmmm, this maybe should be set in the Module class and overriden when needed as opposed to being always overriden
+	getSaveFileSubmitURL: function(){
+		return lattice.util.getBaseURL() + 'ajax/data/cms/savefile/' + this.getObjectId() + "/";
+	},
+
 	getSaveFieldURL: function(){
-//		console.log( this.toString(), this.element );
 		var url = lattice.util.getBaseURL() +"ajax/data/cms/savefield/" + this.getObjectId();
-//		console.log( 'cluster.getSaveFieldURL', url );
 		return url;
 	}
 
@@ -324,24 +429,17 @@ lattice.modules.AjaxFormModule = new Class({
 	},
 
 	onFormSubmissionComplete: function( text, json ){
-
 		if( json ){
-//			console.log( this.toString(), "onFormSubmissionComplete", text, json );
 			json = JSON.decode( json );
-//			console.log( this.toString(), "onFormSubmissionComplete" );
 			if( this.resultsContainer ){
-//				this.resultsContainer.setStyle( "height", 'auto' );
-//				this.resultsContainer.removeClass( "centeredSpinner" );
 				this.resultsContainer.set( "html", json.html );
 			}
-//			console.log( this.resultsContainer.get( "html" ) );
 		}else{
+			alert( "NO JSON RESPONSE... check for 500 error?" );
 			throw "NO JSON RESPONSE... check for 500 error?";
 		}
-	
 	}
 	
-
 });
 
 lattice.modules.LatticeList = new Class({
@@ -864,9 +962,6 @@ lattice.modules.LatticeAssociator = new Class({
 		this.parent( anElement, aMarshal, options );
 		this.objectId = this.element.get( 'data-objectid' );
 		this.allowChildSort = ( this.element.get('data-allowchildsort') == 'true' )? true : false;
-		console.log( this.element )
-
-		console.log( this.element )
 		this.searchInput = this.element.getElement( ".actuator input[name~='filter']" );	
 		this.searchInput.addEvent( 'click', function(e){ e.stop(); this.searchInput.select(); }.bindWithEvent( this ) );
 	},
