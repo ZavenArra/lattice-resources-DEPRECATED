@@ -452,7 +452,7 @@ ul.listing li{
 	font-size: 1em;
 }
 
-.associator .associated{
+.associator>.associated{
 	border: 1px #aaa dotted;
 	min-height: 3em;
 }
