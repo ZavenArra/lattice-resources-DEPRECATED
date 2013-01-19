@@ -184,7 +184,7 @@ lattice.modules.Module = new Class({
 		el.getChildren().each( function( aChild, anIndex ){
 			if( aChild.get('class') && aChild.hasClass( "tabGroup" ) ){
 				// if a child element has a class of .tabGroup it's a tabgroup this module needs to instantiate
-				console.log( 'add tab group:', this.toString(), aChild );
+//				console.log( 'add tab group:', this.toString(), aChild );
 				tabGroups.combine( [ aChild ] );
 			} else if( !aChild.hasClass( "modal" ) && !aChild.hasClass( "module" ) && !aChild.hasClass( "listItem" )  && !aChild.hasClass( "cluster" ) ){
 				//if this child element isnt a modal, module or listitem, it's just structural markup and we should grab it's children to see if they are potential tabGroups as well
@@ -962,8 +962,10 @@ lattice.modules.LatticeAssociator = new Class({
 		this.parent( anElement, aMarshal, options );
 		this.objectId = this.element.get( 'data-objectid' );
 		this.allowChildSort = ( this.element.get('data-allowchildsort') == 'true' )? true : false;
-		this.searchInput = this.element.getElement( ".actuator input[name~='filter']" );	
-		this.searchInput.addEvent( 'click', function(e){ e.stop(); this.searchInput.select(); }.bindWithEvent( this ) );
+		this.searchInput = this.element.getElement( ".actuator input[name~='filter']" );
+		if( this.searchInput ){
+			this.searchInput.addEvent( 'click', function(e){ e.stop(); this.searchInput.select(); }.bindWithEvent( this ) );
+		}
 	},
 	
 	filterPoolByWord: function( e ){
@@ -991,7 +993,7 @@ lattice.modules.LatticeAssociator = new Class({
 
 		this.parent();
 
-		this.actuator = this.element.getElement('.actuator');
+		this.methods = this.element.getElement('.methods');
 		this.associated = this.element.getElement( 'ul.associated' );
 		this.poolContainer = this.element.getElement('.poolcontainer');
 		this.poolList = this.element.getElement( 'ul.pool' );
@@ -1003,9 +1005,9 @@ lattice.modules.LatticeAssociator = new Class({
 
 		this.poolMorph = new Fx.Morph( this.poolList, { duration: 'short', transition: Fx.Transitions.Sine.easeOut } );
 
-		if( this.actuator ){
+		if( this.methods ){
 
-			this.paginator = this.actuator.getElement( '.paginator' );
+			this.paginator = this.methods.getElement( '.paginator' );
 			if( this.paginator ){
 				this.paginator.getElements('li a').each( function( anItem ){
 					if( anItem.hasClass('active') ) this.activePage = anItem;
@@ -1115,11 +1117,13 @@ lattice.modules.LatticeAssociator = new Class({
 	},
 
 	dissociateRequest: function( item ){
-		//console.log("dissociate", item, item.getObjectId(), this.poolList );
-		this.poolList.grab( item.element, 'top' );
-    item.element.spin();
-		this.onOrderChanged();
+		console.log("dissociate", item.toString(), item.getObjectId(), this.poolList );
+		console.log( item.element );
 		this.sortableList.removeItems( item.element );
+		this.poolList.grab( item.element, 'top');
+	  // this was breaking when element was in a non-visible container
+	  // item.element.spin();
+		this.onOrderChanged();
 		lattice.util.EventManager.broadcastMessage( "resize" );          
 		var jsonRequest = new Request.JSON( { url: this.getDissociateURL( this.getObjectId(), item.getObjectId(), this.element.get('data-lattice') ), onSuccess: function( json ){ this.onDissociateResponse( json, item ); }.bind( this ) } ).send();
 		return jsonRequest;
