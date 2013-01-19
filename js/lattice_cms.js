@@ -152,8 +152,8 @@ lattice.modules.CMS = new Class({
 		this.initModules( this.element );
 	},
 
-	populate: function( html ){
-		
+	populate: function( html, objectTypeName ){
+		console.log( 'populate', objectTypeName );
 		var page, langPage, langContainer, pageCount, w;
 
 		if( !this.pages[ this.loc ] ){
@@ -171,7 +171,7 @@ lattice.modules.CMS = new Class({
 		console.log( "W", w )
 		this.pageContainer.setStyle( "width", w );
 
-		this.currentPage.populate( html );
+		this.currentPage.populate( html, objectTypeName );
 		
 		this.slideToPage( this.currentPage );
 	},
@@ -213,12 +213,13 @@ lattice.modules.CMS = new Class({
     if( this.slugIPE ) this.slugIPE.retrieve( "Class" ).setValue( response.slug );
 	},
 
-	onJSLoaded: function( html, jsLoadCount ){
+	onJSLoaded: function( html, objectTypeName ){
+		console.log( 'onJSLoaded', objectTypeName );
 		// keeps any callbacks from previous pageloads from registering
 		this.scriptsLoaded++;
 //		console.log( this, "onJSLoaded", html, this.scriptsLoaded, this.loadedJS.length );
 		if( this.loadedJS.length == this.loadedJS.length ){			
-			this.populate( html );
+			this.populate( html, objectTypeName );
 		}
 	},
 
@@ -250,6 +251,7 @@ lattice.modules.CMS = new Class({
 			json - Object : { css: [ "pathToCSSFile", "pathToCSSFile", ... ], js: [ "pathToJSFile", "pathToJSFile", "pathToJSFile", ... ], html: "String" }
 	*/
 	requestPageResponse: function( json ){
+		console.log( ":::::: requestPageResponse", json.response.data.objectTypeName );
 		if( json.response.data ) this.setObjectId( json.response.data.id );
 		json.response.css.each( function( styleSheetURL, index ){
 			styleSheetURL = lattice.util.getBaseURL() + styleSheetURL;
@@ -266,13 +268,13 @@ lattice.modules.CMS = new Class({
 				this.loadedJS.push( urlString );
 				lattice.util.loadJS( urlString, {
 					type: "text/javascript", 
-					onload: this.onJSLoaded.bind( this, [ json.response.html ] )
+					onload: this.onJSLoaded.bind( this, [ json.response.html, json.response.data.objectTypeName ] )
 				} );                    
 			}
 		}, this );
-			if( noneLoaded ) this.populate( json.response.html );
+			if( noneLoaded ) this.populate( json.response.html, json.response.data.objectTypeName );
 		}else{
-			this.populate( json.response.html );
+			this.populate( json.response.html, json.response.data.objectTypeName );
 		}
 	},
 	
@@ -393,10 +395,20 @@ lattice.modules.CMSPage = new Class({
 		return '[object, lattice.LatticeObject, lattice.modules.Module, lattice.modules.CMSPage ]';
 	},
 	
-	populate: function( content ){
+	populate: function( content, objectTypeName ){
+		console.log( "CMSPAGE", objectTypeName );
 		var titleEl, titleIPE;
 		this.clearContent();
 		this.loc = this.element.getValueFromClassName('loc');
+
+		// we wrap the class with objectTypeName, to serve as a styling hook for object custom templates
+		// first we need to remove the previous one on ajax load (if it exists)
+		if( this.currentObjectTypeName ) this.element.removeClass( this.currentObjectTypeName );
+		// then we set the currentObjectTypeName to the new value
+		this.currentObjectTypeName = objectTypeName;
+		// and we add the class
+		this.element.addClass( objectTypeName );
+		// set the content
 		this.element.set( 'html', content );
 		this.UIFields = this.initUI( this.element );
 		this.initModules( this.element );		
@@ -500,7 +512,21 @@ lattice.modules.CMSPage = new Class({
 
 if( !lattice.util.hasDOMReadyFired() ){
 	window.addEvent( "domready", function(){
+
+			/* smooth */
+//			new SmoothScroll({duration:500});
+						
+
+
+
 		lattice.util.DOMReadyHasFired();
+		var ismobile = 	lattice.util.isMobile();
+		lattice.pointerEnterEvent = ( ismobile )? 'touchstart' : 'mouseenter';
+		lattice.pointerLeaveEvent = ( ismobile )? 'touchend' : 'mouseleave';
+		/* @todo : click is touchend when pointer and element are aligned */
+		lattice.clickEvent = ( lattice.util.isMobile )? 'touchend' : 'click';
+
+
 		lattice.historyManager = new lattice.util.HistoryManager().instance();
 		lattice.historyManager.init();
 		lattice.eventManager = new lattice.util.Broadcaster();
@@ -508,5 +534,7 @@ if( !lattice.util.hasDOMReadyFired() ){
 		if( lattice.loginTimeout && lattice.loginTimeout > 0 ) loginMonitor = new lattice.util.LoginMonitor();
 		lattice.util.EventManager.broadcastMessage( "resize" );
 		lattice.CMS = new lattice.modules.CMS( 'cms' );
+
+
 	});
 }
