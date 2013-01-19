@@ -95,7 +95,8 @@
 
 .datepicker .titleText .column {
 	float: left;
-	width: 194px;
+	width: 126px;
+	text-align: center;
 	margin-left: 5px;
 }
 
