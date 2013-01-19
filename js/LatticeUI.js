@@ -1,6 +1,7 @@
 lattice.ui = {};
 lattice.ui.navigation = {};
 
+
 /*
 todo, this kinda crap goes away if we use sass+compass
 */
@@ -22,6 +23,76 @@ Element.implement({
 		}
 	}
 });
+
+
+		/* scroll spy plugin / class */
+		var ScrollSpy = new Class({
+			
+			/* implements */
+			Implements: [Options,Events],
+		
+			/* options */
+			options: {
+				min: 0,
+				mode: 'vertical',
+				max: 0,
+				container: window,
+				onEnter: function(){},
+				onLeave: function(){},
+				onTick: function(){}
+			},
+			
+			/* initialization */
+			initialize: function(options) {
+				/* set options */
+				this.setOptions(options);
+				this.container = $(this.options.container);
+				this.enters = this.leaves = 0;
+				this.max = this.options.max;
+				
+				/* fix max */
+				if(this.max == 0) 
+				{ 
+					var ss = this.container.getScrollSize();
+					this.max = this.options.mode == 'vertical' ? ss.y : ss.x;
+				}
+				/* make it happen */
+				this.addListener();
+			},
+			
+			/* a method that does whatever you want */
+			addListener: function() {
+				/* state trackers */
+				this.inside = false;
+				this.container.addEvent('scroll',function() {
+					/* if it has reached the level */
+					var position = this.container.getScroll();
+					var xy = this.options.mode == 'vertical' ? position.y : position.x;
+					/* if we reach the minimum and are still below the max... */
+					if(xy >= this.options.min && xy <= this.max) {
+							/* trigger Enter event if necessary */
+							if(!this.inside) {
+								/* record as inside */
+								this.inside = true;
+								this.enters++;
+								/* fire enter event */
+								this.fireEvent('enter',[position,this.enters]);
+							}
+							/* trigger the "tick", always */
+							this.fireEvent('tick',[position,this.inside,this.enters,this.leaves]);
+					}
+					else {
+						/* trigger leave */
+						if(this.inside) 
+						{
+							this.inside = false;
+							this.leaves++;
+							this.fireEvent('leave',[position,this.leaves]);
+						}
+					}
+				}.bind(this));
+			}
+		});
 
 
 lattice.ui.UIField = new Class({
@@ -297,12 +368,14 @@ lattice.ui.Tabs = new Class({
 	},
 
 	onTabClicked: function( e, tab ){
+		console.log( 'onTabClicked', tab, tab.get( 'data-targetselector' ) );
 		if( e ) e.preventDefault();
 		var target = this.element.getElement( '.tab-contents .' + tab.get( 'data-targetselector' ) );
 		this.activeTab.removeClass( 'active' );
 		this.activeTab = tab;
 		this.activePanel.addClass('hidden');
 		tab.addClass('active');
+		console.log( target, tab );
 		target.removeClass('hidden');
 		this.activePanel = target;
 	}
@@ -362,7 +435,7 @@ lattice.ui.navigation.BreadCrumbTrail = new Class({
 	
 	onCrumbClicked: function( e, obj ){
 		lattice.util.stopEvent( e );
-//		console.log( "::::: \t onBreadCrumbClicked", obj );
+		console.log( "::::: \t onBreadCrumbClicked", obj );
 		this.onCrumbClickedCallback( obj );
 	},
 	
@@ -482,7 +555,8 @@ lattice.ui.Sortable = new Class({
 		area: 24,
 		constrain: false,
 		onComplete: function( droppedItem, ghostItem ){
-			console.log( arguments );
+
+		console.log( "::::", arguments );
 			this.isSorting = false; 
 			this.scroller.stop();
 			droppedItem.removeClass('ghost');
@@ -547,6 +621,9 @@ lattice.ui.Modal = new Class({
 			this.modalAnchor.setStyles({ "useHandCursor":false });
 			this.modalAnchor.set( 'href', "#" );
 			this.modalAnchor.addEvent( "click", function( e ){ lattice.util.stopEvent(e); } );
+
+			this.boundOnKeyPress = this.onKeyPress.bind( this );
+
 			this.showTransition = new Fx.Morph( this.element, { 
 				property: "opacity",
 				duration: this.options.fadeDuration,
@@ -564,7 +641,7 @@ lattice.ui.Modal = new Class({
 				duration: this.options.fadeDuration
 			});
 		},
-		
+
 		build: function(){
 			this.element = new Element( "div", { "class": "modalContainer hidden" });
 			this.modalAnchor = new Element( "a", {
@@ -606,25 +683,35 @@ lattice.ui.Modal = new Class({
 		toString: function(){ return "[ object, lattice.ui.Modal ]"; },
 		
 		show: function(){
+			console.log( this.modalAnchor, 'show', this.boundOnKeyPress );
+			$(window).addEvent( 'keydown', this.boundOnKeyPress );
 			this.element.setStyle( "opacity", 0 );
 			this.element.removeClass("hidden");
 			this.showTransition.start( { "opacity": 1 } );
 		},
 
+		onKeyPress: function( e ){
+			console.log( "onKeyPress", e.key );
+			if( e.key == 'esc'){
+				this.cancel();
+			}
+		},
+
 		close: function( onComplete ){
+			this.element.removeEvents();
 			this.hideTransition.cancel();
 			this.hideTransition.start({
 				onComplete: function(){
 					if( onComplete ) onComplete();
 					this.element.setStyle( 'opacity', 0 );
 					this.element.addClass( 'hidden' );
-//					lattice.modalManager.removeModal( this );
 				}.bind( this )
 			});
 		},
 		
 		cancel: function( e ){
 			lattice.util.stopEvent( e );
+			$(window).removeEvent( 'keydown', this.boundOnKeyPress );
 			if( this.options.onCancel ) this.options.onCancel();
 			this.close();
 		},
@@ -645,14 +732,11 @@ lattice.ui.Modal = new Class({
 			if( aTitle ) this.setTitle( aTitle );
 			this.container.unspin();
 			if( typeof someContent == "string" ){
-				console.log("!!!!");
 				this.container.set( "html", someContent );
 			}else if ( grab ){
-				console.log("!!!! grab ");
 				this.grabbedContent = someContent;
 				this.container.grab( this.grabbedContent );
 			} else {
-				console.log('c');
 				this.container.adopt( someContent );				
 			}
 		},
@@ -662,6 +746,7 @@ lattice.ui.Modal = new Class({
 		},
 
 		destroy: function(){
+			$(window).removeEvent( 'keydown', this.boundOnKeyPress );
 			if( this.element ) this.element.destroy();
 			this.element = this.modalAnchor = this.modal = this.header = this.headerControls = this.title = this.container = this.footer = this.footerControls = this.marshal = this.hideTransition = this.showTransision = null;
 		}		
@@ -676,8 +761,13 @@ lattice.ui.ModuleModal = new Class({
 	initialize: function( aMarshal, options ){
 		this.parent( aMarshal, options );
 	},
+
+	toString: function(){ return "[ object, lattice.ui.ModuleModal ]"; },
+
 	cancel: function( e ){
 		lattice.util.stopEvent( e );
+		console.log("!", this.onKeyPress );
+		$( window ).removeEvent( 'keydown', this.boundOnKeyPress );
 		if( this.options.onCancel ) this.options.onCancel();
 		// put element back where it belongs
 		this.marshal.updateContentFromModal( this.grabbedContent );
@@ -1034,7 +1124,7 @@ lattice.ui.DatePicker = new Class({
 		
 	initialize: function( anElement, options ){
 		this.parent( anElement, options );
-		console.log( 'datepicker', anElement, options );
+//		console.log( 'datepicker', anElement, options );
 		this.format = ( this.element.getData('format') )? this.element.getData('format') : this.options.format;
 		this.allowEmpty = ( this.element.getData('allowempty') )? this.element.getData('allowempty') : this.options.allowEmpty;
 		this.dateField = this.element.getElement("input");
@@ -1450,7 +1540,8 @@ lattice.ui.FileElement = new Class({
 		this.downloadButton.removeClass("hidden");
 		this.downloadButton.set( 'title', 'download ' + json.response.filename );
 		this.downloadButton.set( "href", lattice.util.getBaseURL() + json.response.src );
-		//console.log( this.toString(), "onFileComplete", lattice.util.getBaseURL() + json.response.thumbSrc );
+		console.log( this.toString(), "onFileComplete", lattice.util.getBaseURL() + json.response.thumbSrc );
+		this.element.removeClass('empty');
 		this.downloadButton.removeClass("hidden");
 		if( this.previewElement ){
 			this.imgAsset = new Asset.image( lattice.util.getBaseURL() + json.response.thumbSrc, {  alt: json.response.filename, onload: this.updateThumb.bind( this, json ) } );
@@ -2112,11 +2203,25 @@ lattice.ui.Input = new Class({
 	},
 
 	checkFormaxLength: function( e ){
-		if( e.target.get("value").length >= this.maxLength && e.key != "shift" && e.key != "enter" && e.key != "return" && e.key != "tab" && e.keycode != 46 && e.keycode != 8 ){
+		var len = e.target.get("value").length;
+		console.log( 'length', len );
+		if( len > this.maxLength
+			 && e.code != 46
+			 && e.key != 'enter'
+			 && e.key != 'return'
+			 && e.key != 'shift'
+			 && e.key != 'command'
+			 && e.key != 'control'
+			 && e.key != 'option'
+			 && e.key != 'up'
+			 && e.key != 'down'
+			 && e.key != 'left'
+			 && e.key != 'right'
+			 && e.key != 'esc'
+			 && e.key != 'backspace' ){
 			lattice.util.stopEvent( e );
-			alert( "The maximum length this field allows is " + this.maxLength + " characters");
-		}
-	},
+			alert( "The maximum length this field allows is " + this.maxLength + " characters. This field currently has, " + len );
+		}	},
 
 	getValue: function(){
 		return this.inputElement.get( "value" );
@@ -2325,9 +2430,23 @@ lattice.ui.Text = new Class({
 	},
 		
 	checkFormaxLength: function(e){
-		if( e.target.get("value").length > this.maxLength && e.keycode != 46 && e.keycode != 8 ){
+		var len = e.target.get("value").length;
+		if( len > this.maxLength
+			 && e.code != 46
+			 && e.key != 'enter'
+			 && e.key != 'return'
+			 && e.key != 'shift'
+			 && e.key != 'command'
+			 && e.key != 'control'
+			 && e.key != 'option'
+			 && e.key != 'up'
+			 && e.key != 'down'
+			 && e.key != 'left'
+			 && e.key != 'right'
+			 && e.key != 'esc'
+			 && e.key != 'backspace' ){
 			lattice.util.stopEvent( e );
-			alert( "The maximum length this field allows is " + this.maxLength + " characters");
+			alert( "The maximum length this field allows is " + this.maxLength + " characters. This field currently has, " + len );
 		}
 	},
 
@@ -2812,7 +2931,7 @@ lattice.ui.Tags = new Class({
 		this.parent( anElement, aMarshal, options );
 		this.field = this.element.getElement('.tagInput');
 		this.tokenList = this.element.getElement( 'ul.tokens' ); 
-		console.log( ":::", this.tokenList, this.tokenList.getChildren(), this.marshal.getElement() );
+//		console.log( ":::", this.tokenList, this.tokenList.getChildren(), this.marshal.getElement() );
 		this.tokenTemplate = this.tokenList.getElement( '.token.template' ).dispose();
 		this.tokenTemplate.removeClass('template');
 		this.ogBg = this.tokenTemplate.getStyle( 'background-color' );
@@ -2898,7 +3017,8 @@ lattice.ui.Tags = new Class({
 		var index, token, bg;
 		index = this.getTokens().indexOf( tokenString )
 		token = this.tokenList.getElements( 'li.token' )[index];
-		token.set( 'morph', { link: 'chain', transition: Fx.Transitions.Quad.easeOut, duration: 250 } );
+		this.leaveEditMode( null );
+		token.set( 'morph', { link: 'chain', transition: Fx.Transitions.Quad.easeOut, duration: 750 } );
 		token.morph( { 'background-color' : "#fcf3a0" } );
 		token.morph( { 'background-color' : this.ogbg } );
 	},
