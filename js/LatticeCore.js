@@ -339,6 +339,9 @@ lattice.util.loadStyleSheet = function( cssURL, mediaString, opts ){
 	new Asset.css( cssURL, options ); 
 }
 
+lattice.util.isMobile = function(){
+	return (  Event.touchstart && typeof Event.touchstart == 'object' );
+}
 /*
 	Function: lattice.util.loadJS
 	Attach a javascript element to head element via DOM
