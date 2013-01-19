@@ -16,6 +16,7 @@ General
 .hidden{ display: none !important; }
 
 .away{
+	display: block !important;
 	position: absolute !important; 
 	top: -5000px;
 	left: -5000px;
@@ -232,6 +233,20 @@ input, textarea{
 	cursor: text;
 }
 
+
+.associator .floatcontrol{
+	display: none;
+	padding: 1em;
+	background: transparent;
+}
+
+.associator:hover .floatcontrol{
+	position: absolute;
+	left: -2.5em;
+	top: -0.25em;
+	display: block;
+}
+
 .ui-Text textarea{
 	word-wrap: break-word;
 	display: block;
@@ -373,6 +388,16 @@ ul.listing li{
 	background: #aaa;
 }
 
+.associator_checkboxes {
+	padding: 1em .5em .5em 1em;
+	border: 1px transparent solid;
+}
+
+.associator_checkboxes h4 {
+	font-size: 1.5em;
+	margin-bottom: .25em;
+}
+
 .associator_checkboxes .toggle{
 	border-radius: 3px;
 	background: #dedede;
@@ -414,6 +439,11 @@ ul.listing li{
 	position: relative;
 }
 
+.associatorImage{
+	padding: .5em;
+	box-shadow: 1px 1px 5px rgba( 0,0,0,.5 );
+}
+
 .associatorImage>.itemControls .delete,
 .listItem>.itemControls .delete{
 	background: url( ../images/icon_trash.gif );
@@ -445,15 +475,39 @@ ul.listing li{
 .associator{
 	margin-top: 1.5em;
 	position: relative;
+	border: 1px transparent solid;
 }
 
-.associator ul li h4{
+.associator_checkboxes:hover,
+.associator:hover	{
+	border: 1px #aaa dotted;
+}
+
+.modal .associator{
+	margin: 0 0 0 0	
+}
+
+.modal .associator:hover {
+	border: none;
+}
+
+.modal .associator ul.pool{
+	background: none;
+}
+
+.associator h4{
 	position: static;
 	font-size: 1em;
+	margin: 1em 0 0 .75em;
+}
+
+
+.associator>h4{
+	font-size: 1.5em;
+	margin-top: .5em;
 }
 
 .associator>.associated{
-	border: 1px #aaa dotted;
 	min-height: 3em;
 }
 
@@ -470,16 +524,16 @@ ul.listing li{
 .associator ul.pool{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	padding-top: .5em;
 	max-height: 88em;
 	overflow: auto;
-	background:#eee;
+	background:#efefef;
 }
 
 .associator ul li{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	float: left;
+	display: inline-block;
+	position: relative;
 	padding: .5em;
 	margin: .5em;
 	background:#fff;
@@ -490,9 +544,10 @@ ul.listing li{
 	cursor: move;
 }
 
-.associator .actuator{
+.associator .methods{
 	clear: both;
-	padding: .5em 1em .5em 0;
+	padding: .5em 0 0 0;
+	margin: 0;
 }
 
 .associator input{
@@ -503,39 +558,52 @@ ul.listing li{
 	line-height: 1.25em;
 }
 
-.associator .actuator h4{
+.associator .methods h4{
 	font-size: 1em;
-	line-height: 2;
+	background: #efefef;
+	color: #aaa;
+	margin: 0;
+	padding: .75em .5em .25em 1em;
 }
-.associator .actuator .actuatorButton,
+
+.modal .associator .methods h4{
+	font-size: 1.25em;
+	font-weight: normal;
+	padding: none;
+	margin-bottom: .25em;
+	background: none;
+}
+
+
+.associator .methods .actuatorButton,
 .associator ul li{
 	position: relative;
 }
 
-.associator .actuator .actuatorButton{
+.associator .methods .actuatorButton{
 	text-indent: 2em !important;
 }
 
-.associator .actuator a.actuatorButton{
+.associator .methods a.actuatorButton{
 	display: block;
 	height: 16px;
 	background-image: url( ../images/sprite_openclose.png );
 	background-repeat: no-repeat;
 }
 
-.associator .actuator a.icon.closed{
+.associator .methods a.icon.closed{
 	background-position: 0px 32px;
 }
 
-.associator .actuator a.icon.closed:hover{
+.associator .methods a.icon.closed:hover{
 	background-position: 0px 48px;
 }
 
-.associator .actuator a.icon.open{
+.associator .methods a.icon.open{
 	background-position: 0px 0px;
 }
 
-.associator .actuator a.icon.open:hover{
+.associator .methods a.icon.open:hover{
 	background-position: 0px 16px;
 }
 
@@ -545,8 +613,9 @@ ul.listing li{
 }
 
 .associator .itemControls {
-	top: 45%;
-	left: -.5em;
+	position: absolute;
+	top: -.5em;
+	right: -.5em;
 }
 
 .associator .itemControls .dissociate,
@@ -622,28 +691,21 @@ ul.listing li{
 
 .ui-FileElement .controls {
 	position: absolute;
-	bottom: .5em;
-	left: .5em;
 	display: none;
+	top: -.125em;
+	right: .25em;
+	bottom: none;
+	left: none;
 	opacity: 0;
 	z-index: 10;
 }
 
 .ui-FileElement:hover .controls {
-	position: absolute;
-	bottom: .25em;
 	display: block;
 	opacity: 1;
 }
 
-.ui-FileElement.empty:hover .controls {
-	left: none;
-	top: -.125em;
-	bottom: none;
-	right: .5em;
-	text-align: right;
-}
-
+.associatorImage .wrapper,
 .cluster,
 .ui-FileElement {
 	margin: .25em 0 .5em 0;
@@ -679,7 +741,7 @@ ul.listing li{
 	font-size: 80%;
 	background-repeat:no-repeat;
 	background-position: .25em .25em;
-	padding: .25em .25em .125em 3em;
+	padding: .25em .25em .125em 2.5em;
 	margin:0 0 .5em 0;
 }
 
@@ -691,7 +753,7 @@ ul.listing li{
 .ui-FileElement .status .progress {
 	background:	white url( ../images/progress.gif) no-repeat;
 	background-position: +50% 0;
-	width:248px;
+	width:100%;
 	margin:0 auto;
 }
 
@@ -786,7 +848,7 @@ input.button,
   -webkit-border-radius: 2px;
   -khtml-border-radius: 2px;
   border-radius: 2px;
-  box-shadow: 1px 1px 2px rgba( 0,0,0,.7 );
+  box-shadow: 1px 1px 2px rgba( 0,0,0,.5 );
 }
 
 a.command:hover,
@@ -844,11 +906,12 @@ a.icon.preview.active { background-image: url( ../images/icon_preview.png ); bac
 .listcontrol.top{
 	margin-top: 1em;
 }
+
 /* -----------------------------------------------------------
 Labels
 ----------------------------------------------------------- */
 
-label{
+label {
 	font-size: .875em;
 	font-weight: normal;
 	color:#aaa;
@@ -909,11 +972,12 @@ label{
 }
 
 .loginStatus{
-	float: right;
+	position: absolute;
+	right: 0;
 	color: #999;
 	font-size: .875em;
 	margin: .5em 0;
-	width: 216px;
+	text-align: right;
 	line-height: 1.5em;
 	white-space: nowrap !important;
 }
@@ -1512,7 +1576,7 @@ ul.listing li.menuItem:hover{
     clear: both;
 	list-style:none;
 	font-family: "Georgia", "Times", serif;
-	margin: 0 0 0 0;
+	margin: 0 0 0 .5em;
 }
 
 .breadCrumb ul li{
@@ -1616,9 +1680,11 @@ ul.tokens{
 	padding: .125em .5em;
 }
 
-.ui-Tags label{
+.associator_checkboxes label,
+.ui-Tags label {
 	display: block;
 	float: left;
+	color: #000 !important;
 	padding-top: .25em;
 }
 
