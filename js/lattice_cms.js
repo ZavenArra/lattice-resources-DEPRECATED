@@ -427,7 +427,9 @@ lattice.modules.CMSPage = new Class({
 				this.pageMetaElement.removeClass('hidden');
 				this.metaIcon.addEvent( 'click', this.showPageMeta.bindWithEvent( this ) );
 			}else{
-				this.metaIcon.destroy();
+        if(this.metaIcon) {
+          this.metaIcon.destroy();
+        }
 			}
 		}
 		
